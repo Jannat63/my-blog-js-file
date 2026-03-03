@@ -8,7 +8,12 @@ export async function POST(req: Request) {
   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 }
 
-    const { title, slug, excerpt, content, image, date } = body;
+    const { title, excerpt, content, image, date, status } = body;
+    const slug = title
+  .toLowerCase()
+  .replace(/[^a-z0-9\s-]/g, "")
+  .trim()
+  .replace(/\s+/g, "-");
 
     if (!title || !slug || !content) {
       return NextResponse.json(
@@ -27,6 +32,20 @@ export async function POST(req: Request) {
 
     const sheets = google.sheets({ version: "v4", auth });
 
+    const existing = await sheets.spreadsheets.values.get({
+  spreadsheetId: process.env.GOOGLE_SHEET_ID,
+  range: "Sheet1!C2:C1000",
+});
+
+const existingSlugs = existing.data.values?.flat() || [];
+
+if (existingSlugs.includes(slug)) {
+  return NextResponse.json(
+    { error: "Post with this title already exists" },
+    { status: 400 }
+  );
+}
+
     await sheets.spreadsheets.values.append({
       spreadsheetId: process.env.GOOGLE_SHEET_ID,
       range: "Sheet1!A:H",
@@ -41,7 +60,7 @@ export async function POST(req: Request) {
             content,
             image || "",
             date || new Date().toISOString().split("T")[0],
-            "published",
+            status || "draft",
           ],
         ],
       },

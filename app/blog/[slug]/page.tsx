@@ -37,9 +37,9 @@ export default async function BlogPost({
       <p className="text-gray-500 mb-8">{post.date}</p>
 
       {/* Content */}
-      <div className="bg-white p-6 rounded-lg shadow-sm border">
-        <p>{post.content}</p>
-      </div>
+      <article className="prose prose-lg max-w-none bg-white p-8 rounded-xl shadow-sm">
+  <p>{post.content}</p>
+</article>
     </main>
   );
 }

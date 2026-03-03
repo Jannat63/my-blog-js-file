@@ -21,7 +21,8 @@ export async function getSheetData() {
 
   if (!rows) return [];
 
-  return rows.map((row) => ({
+  return rows
+  .map((row: any[]) => ({
     id: row[0],
     title: row[1],
     slug: row[2],
@@ -30,7 +31,8 @@ export async function getSheetData() {
     image: row[5],
     date: row[6],
     status: row[7],
-  })).filter(post => post.status === "published");
+  }))
+  .filter((post) => post.status === "published");
 }
 export async function getPostBySlug(slug: string) {
   const posts = await getSheetData();
