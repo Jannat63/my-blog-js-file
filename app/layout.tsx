@@ -1,10 +1,10 @@
 import "./globals.css";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export const metadata = {
-  title: "My Blog",
-  description: "Dynamic blog powered by Next.js and Google Sheets",
+  title: "Ahsan's Blog",
+  description: "Minimal thoughts & modern writing.",
 };
 
 export default function RootLayout({
@@ -14,7 +14,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-gray-50 text-gray-900">
+      <body className="bg-white text-gray-900 antialiased">
         <Navbar />
         {children}
         <Footer />

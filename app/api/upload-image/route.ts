@@ -10,14 +10,17 @@ cloudinary.config({
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const file = body.file;
 
-    const uploadResponse = await cloudinary.uploader.upload(file, {
-      folder: "blog",
-    });
+    if (body.secret !== process.env.ADMIN_SECRET) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
-    return NextResponse.json({ url: uploadResponse.secure_url });
+    const upload = await cloudinary.uploader.upload(body.file);
+
+    return NextResponse.json({ url: upload.secure_url });
+
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ error: "Upload failed" }, { status: 500 });
   }
 }

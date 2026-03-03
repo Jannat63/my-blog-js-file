@@ -6,6 +6,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { id, secret } = body;
 
+    // 🔐 AUTH
     if (secret !== process.env.ADMIN_SECRET) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -26,7 +27,6 @@ export async function POST(req: Request) {
     });
 
     const rows = response.data.values || [];
-
     const rowIndex = rows.findIndex((row) => row[0] === id);
 
     if (rowIndex === -1) {
@@ -52,6 +52,7 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ success: true });
+
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: "Delete failed" }, { status: 500 });

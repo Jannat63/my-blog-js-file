@@ -232,12 +232,45 @@ export default function AdminPage() {
             />
 
             <input
-              name="image"
-              value={form.image}
-              onChange={handleChange}
-              placeholder="Image URL"
-              className="w-full border p-3 rounded"
-            />
+  type="file"
+  accept="image/*"
+  className="w-full border p-3 rounded"
+  onChange={async (e: any) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onloadend = async () => {
+      const res = await fetch("/api/upload-image", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    file: reader.result,
+    secret: process.env.NEXT_PUBLIC_ADMIN_SECRET,
+  }),
+});
+
+      const data = await res.json();
+
+      if (data.url) {
+        setForm({ ...form, image: data.url });
+      } else {
+        alert("Image upload failed");
+      }
+    };
+
+    reader.readAsDataURL(file);
+  }}
+/>
+
+{form.image && (
+  <img
+    src={form.image}
+    alt="Preview"
+    className="w-full h-48 object-cover rounded-lg mt-4"
+  />
+)}
 
             <select
               name="status"

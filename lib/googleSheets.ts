@@ -27,6 +27,8 @@ export async function getSheetData() {
     image: row[5],
     date: row[6],
     status: row[7] || "draft", // fallback safety
+    metaTitle: row[8],
+metaDescription: row[9],
   }));
 
   // 🔐 Only published posts are public

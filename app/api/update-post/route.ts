@@ -6,6 +6,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { id, title, excerpt, content, image, status, secret } = body;
 
+    // 🔐 AUTH
     if (secret !== process.env.ADMIN_SECRET) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -57,6 +58,7 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ success: true });
+
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: "Update failed" }, { status: 500 });
