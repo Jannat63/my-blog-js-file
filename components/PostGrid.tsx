@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function PostGrid({ posts }: any) {
   return (
-    <section className="max-w-7xl mx-auto px-6 pb-24">
+    <section className="max-w-6xl mx-auto px-6 pb-24">
 
       <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-10">
 
