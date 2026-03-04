@@ -7,6 +7,15 @@
 }
 
 body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dark body {
+  background: #0f0f0f;
+  color: #e5e5e5;
+}
+
+body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
@@ -14,4 +23,14 @@ body {
 
 html {
   scroll-behavior: smooth;
+}
+
+::selection {
+  background: #111;
+  color: white;
+}
+
+.dark ::selection {
+  background: #fff;
+  color: black;
 }
