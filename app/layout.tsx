@@ -6,6 +6,9 @@ export const metadata = {
   title: "Ahsan Jannat Blog",
   description:
     "Writing about development, design and the internet. A minimalist digital garden by Ahsan Jannat.",
+    verification: {
+    google: "pC5ifp-SvCoNRqB2kPePKkuRSUOM6y_A-PGenzoopgs",
+  },
 
   openGraph: {
     title: "Ahsan Jannat Blog",
