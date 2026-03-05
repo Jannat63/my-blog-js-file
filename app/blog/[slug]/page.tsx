@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { getPostBySlug, getSheetData } from "@/lib/googleSheets";
 import { notFound } from "next/navigation";
 import ReadingProgress from "@/components/ReadingProgress";
+import { calculateReadingTime } from "@/lib/readingTime";
 
 /* =========================
    SEO METADATA
@@ -50,6 +51,7 @@ export default async function BlogPost({
 
   return (
     <>
+      {/* Reading progress bar */}
       <ReadingProgress />
 
       <main className="min-h-screen bg-gray-50 px-6 py-16">
@@ -61,19 +63,19 @@ export default async function BlogPost({
               <img
                 src={post.image}
                 alt={post.title}
-                className="w-full h-[400px] object-cover"
+                className="w-full h-[420px] object-cover"
               />
             </div>
           )}
 
           {/* Title */}
-          <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
             {post.title}
           </h1>
 
-          {/* Date */}
-          <div className="text-gray-500 text-sm mb-10">
-            {post.date}
+          {/* Meta */}
+          <div className="text-gray-500 text-sm mb-12">
+            {calculateReadingTime(post.content)} • {post.date}
           </div>
 
           {/* Content */}
@@ -116,6 +118,7 @@ export default async function BlogPost({
                       <h4 className="font-semibold mb-2">
                         {related.title}
                       </h4>
+
                       <p className="text-sm text-gray-600">
                         {related.excerpt}
                       </p>

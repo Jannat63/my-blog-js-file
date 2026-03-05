@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { calculateReadingTime } from "@/lib/readingTime";
 
 export default function FeaturedPosts({ posts }: any) {
   if (!posts.length) return null;
@@ -9,9 +10,9 @@ export default function FeaturedPosts({ posts }: any) {
   return (
     <section className="max-w-[1100px] mx-auto px-6 mb-20 grid lg:grid-cols-2 gap-10">
 
-      {/* MAIN POST */}
+      {/* FEATURED POST */}
       <Link href={`/blog/${main.slug}`} className="group">
-        <div className="space-y-4">
+        <div className="space-y-5">
 
           {main.image && (
             <div className="overflow-hidden rounded-2xl">
@@ -26,7 +27,13 @@ export default function FeaturedPosts({ posts }: any) {
             {main.title}
           </h2>
 
-          <p className="text-gray-600">{main.excerpt}</p>
+          <p className="text-gray-600">
+            {calculateReadingTime(main.content)} • {main.date}
+          </p>
+
+          <p className="text-gray-600">
+            {main.excerpt}
+          </p>
 
         </div>
       </Link>
@@ -48,12 +55,12 @@ export default function FeaturedPosts({ posts }: any) {
             )}
 
             <div>
-              <h3 className="font-semibold group-hover:text-black">
+              <h3 className="font-semibold group-hover:text-black transition">
                 {post.title}
               </h3>
 
               <p className="text-sm text-gray-500">
-                {post.date}
+                {calculateReadingTime(post.content)} • {post.date}
               </p>
             </div>
           </Link>
