@@ -231,12 +231,14 @@ export default function AdminPage() {
                 className="w-full bg-white/5 border border-white/10 p-3 rounded-lg outline-none"
               />
 
-              <RichEditor
-                content={form.content}
-                onChange={(value) =>
-                  setForm({ ...form, content: value })
-                }
-              />
+              <div className="border border-white/10 rounded-lg overflow-hidden">
+  <RichEditor
+    content={form.content}
+    onChange={(value) =>
+      setForm({ ...form, content: value })
+    }
+  />
+</div>
 
               <input
                 type="file"
