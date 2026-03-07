@@ -1,12 +1,16 @@
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import BackToTop from "@/components/BackToTop";
 
 export const metadata = {
+  metadataBase: new URL("https://ahsansblog.netlify.app"),
+
   title: "Ahsan Jannat Blog",
   description:
     "Writing about development, design and the internet. A minimalist digital garden by Ahsan Jannat.",
-    verification: {
+
+  verification: {
     google: "pC5ifp-SvCoNRqB2kPePKkuRSUOM6y_A-PGenzoopgs",
   },
 
@@ -18,7 +22,7 @@ export const metadata = {
     siteName: "Ahsan Blog",
     images: [
       {
-        url: "https://ahsansblog.netlify.app/og-image.png",
+        url: "/og-image.png",
         width: 1200,
         height: 630,
       },
@@ -32,7 +36,7 @@ export const metadata = {
     title: "Ahsan Jannat Blog",
     description:
       "Writing about development, design and the internet.",
-    images: ["https://ahsansblog.netlify.app/og-image.png"],
+    images: ["/og-image.png"],
   },
 };
 
@@ -42,11 +46,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" id="top">
       <body className="bg-white text-gray-900 antialiased">
+
         <Navbar />
+
         {children}
+
+        {/* Floating Back To Top Button */}
+        <BackToTop />
+
         <Footer />
+
       </body>
     </html>
   );

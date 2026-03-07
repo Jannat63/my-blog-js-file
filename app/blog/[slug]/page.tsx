@@ -5,9 +5,6 @@ import { notFound } from "next/navigation";
 import ReadingProgress from "@/components/ReadingProgress";
 import { calculateReadingTime } from "@/lib/readingTime";
 
-/* =========================
-   SEO METADATA
-========================= */
 export async function generateMetadata({
   params,
 }: {
@@ -29,9 +26,6 @@ export async function generateMetadata({
   };
 }
 
-/* =========================
-   BLOG PAGE
-========================= */
 export default async function BlogPost({
   params,
 }: {
@@ -60,14 +54,11 @@ export default async function BlogPost({
         <article className="max-w-3xl mx-auto bg-white p-8 md:p-12 rounded-2xl shadow-sm">
 
           {/* Breadcrumb */}
-          <div className="text-sm text-gray-500 mb-6">
-            <a href="/" className="hover:underline">Home</a>
-            <span className="mx-2">/</span>
-            <a href="/blog" className="hover:underline">Blog</a>
-            <span className="mx-2">/</span>
-            <span className="text-gray-700">{post.title}</span>
-          </div>
-
+<div className="text-sm text-gray-500 mb-6">
+  <a href="/" className="hover:underline">Home</a>
+  <span className="mx-2">/</span>
+  <span className="text-gray-700">{post.title}</span>
+</div>
           {/* Featured Image */}
           {post.image && (
             <div className="mb-10 rounded-xl overflow-hidden">
@@ -169,21 +160,37 @@ export default async function BlogPost({
                 </h3>
 
                 <div className="grid md:grid-cols-3 gap-6">
+
                   {relatedPosts.map((related) => (
                     <a
                       key={related.slug}
                       href={`/blog/${related.slug}`}
-                      className="bg-gray-50 p-5 rounded-xl hover:-translate-y-1 hover:shadow-md transition"
+                      className="bg-gray-50 rounded-xl overflow-hidden hover:-translate-y-1 hover:shadow-md transition"
                     >
-                      <h4 className="font-semibold mb-2">
-                        {related.title}
-                      </h4>
 
-                      <p className="text-sm text-gray-600">
-                        {related.excerpt}
-                      </p>
+                      {related.image && (
+                        <img
+                          src={related.image}
+                          alt={related.title}
+                          className="w-full h-40 object-cover"
+                        />
+                      )}
+
+                      <div className="p-5">
+
+                        <h4 className="font-semibold mb-2">
+                          {related.title}
+                        </h4>
+
+                        <p className="text-sm text-gray-600">
+                          {related.excerpt}
+                        </p>
+
+                      </div>
+
                     </a>
                   ))}
+
                 </div>
               </section>
             </>

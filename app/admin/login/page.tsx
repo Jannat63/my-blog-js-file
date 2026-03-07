@@ -17,25 +17,45 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-xl shadow w-96">
-        <h1 className="text-xl font-bold mb-6">Admin Login</h1>
+    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 px-6">
 
+      <div className="w-full max-w-md bg-white p-10 rounded-2xl shadow-xl border">
+
+        {/* Title */}
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-bold">
+            Admin Login
+          </h1>
+
+          <p className="text-sm text-gray-500 mt-2">
+            Access the blog dashboard
+          </p>
+        </div>
+
+        {/* Input */}
         <input
           type="password"
           placeholder="Enter Admin Password"
           value={secret}
           onChange={(e) => setSecret(e.target.value)}
-          className="w-full border p-3 rounded mb-4"
+          className="w-full border border-gray-200 p-3 rounded-lg mb-5 focus:outline-none focus:border-black transition"
         />
 
+        {/* Button */}
         <button
           onClick={handleLogin}
-          className="w-full bg-black text-white py-3 rounded"
+          className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-900 transition font-medium"
         >
           Login
         </button>
+
+        {/* Footer Text */}
+        <p className="text-center text-xs text-gray-400 mt-6">
+          Ahsan's Blog Admin Panel
+        </p>
+
       </div>
+
     </main>
   );
 }
