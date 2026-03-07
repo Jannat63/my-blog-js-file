@@ -20,13 +20,13 @@ export default async function Home() {
     <main className="pt-24">
 
       {/* HERO */}
-      <section className="max-w-[900px] mx-auto px-6 text-center mb-20">
+      <section className="max-w-5xl mx-auto px-6 text-center mb-20">
 
-        <h1 className="text-5xl font-semibold leading-tight mb-6 font-[var(--font-playfair)]">
+        <h1 className="text-5xl md:text-6xl font-semibold leading-tight mb-6 font-[var(--font-playfair)]">
           Welcome.
         </h1>
 
-        <p className="text-gray-600 text-lg">
+        <p className="text-gray-600 text-lg leading-relaxed max-w-2xl mx-auto">
           A modern journal exploring technology, internet culture,
           and the trends shaping our digital future.
         </p>

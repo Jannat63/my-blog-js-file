@@ -51,21 +51,22 @@ export default async function BlogPost({
       <ReadingProgress />
 
       <main className="min-h-screen bg-gray-50 px-6 py-16">
-        <article className="max-w-3xl mx-auto bg-white p-8 md:p-12 rounded-2xl shadow-sm">
+        <article className="max-w-4xl mx-auto bg-white p-10 md:p-14 rounded-2xl shadow-sm">
 
           {/* Breadcrumb */}
-<div className="text-sm text-gray-500 mb-6">
-  <a href="/" className="hover:underline">Home</a>
-  <span className="mx-2">/</span>
-  <span className="text-gray-700">{post.title}</span>
-</div>
+          <div className="text-sm text-gray-500 mb-6">
+            <a href="/" className="hover:underline">Home</a>
+            <span className="mx-2">/</span>
+            <span className="text-gray-700">{post.title}</span>
+          </div>
+
           {/* Featured Image */}
           {post.image && (
             <div className="mb-10 rounded-xl overflow-hidden">
               <img
                 src={post.image}
                 alt={post.title}
-                className="w-full h-[260px] md:h-[420px] object-cover"
+                className="w-full h-[300px] md:h-[480px] object-cover"
               />
             </div>
           )}
@@ -87,10 +88,10 @@ export default async function BlogPost({
           {/* Content */}
           <div
             className="
-              prose 
-              prose-lg 
-              max-w-none 
-              prose-headings:font-bold 
+              prose
+              prose-lg
+              max-w-none
+              prose-headings:font-bold
               prose-headings:text-gray-900
               prose-headings:scroll-mt-20
               prose-p:text-gray-700
