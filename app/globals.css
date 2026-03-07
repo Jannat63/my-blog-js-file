@@ -102,3 +102,81 @@ html {
   background: #22c55e;
   border-radius: 10px;
 }
+
+/* =========================
+   FIX RICH TEXT EDITOR
+========================= */
+
+.admin-ui .ProseMirror {
+  background: rgba(0,0,0,0.45);
+  color: #ffffff;
+  padding: 16px;
+  border-radius: 10px;
+  min-height: 250px;
+  line-height: 1.6;
+}
+
+/* paragraph text */
+
+.admin-ui .ProseMirror p {
+  color: #e5e7eb;
+}
+
+/* headings */
+
+.admin-ui .ProseMirror h1 {
+  font-size: 28px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.admin-ui .ProseMirror h2 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.admin-ui .ProseMirror h3 {
+  font-size: 20px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+/* bold */
+
+.admin-ui .ProseMirror strong {
+  color: #ffffff;
+  font-weight: bold;
+}
+
+/* list */
+
+.admin-ui .ProseMirror ul {
+  color: #e5e7eb;
+  padding-left: 20px;
+}
+
+.admin-ui .ProseMirror li {
+  margin-bottom: 6px;
+}
+
+/* focus glow */
+
+.admin-ui .ProseMirror:focus {
+  outline: none;
+  box-shadow: 0 0 0 1px #22c55e;
+}
+
+/* =========================
+   EDITOR TOOLBAR FIX
+========================= */
+
+.admin-ui button {
+  color: white;
+}
+
+/* editor container border */
+
+.admin-ui .ProseMirror {
+  border: 1px solid rgba(255,255,255,0.1);
+}
