@@ -5,14 +5,28 @@ import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [secret, setSecret] = useState("");
+  const [token, setToken] = useState("");
   const router = useRouter();
 
-  const handleLogin = () => {
-    if (secret === process.env.NEXT_PUBLIC_ADMIN_SECRET) {
+  const handleLogin = async () => {
+    const res = await fetch("/api/admin-login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        password: secret,
+        token: token,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
       sessionStorage.setItem("admin", "true");
       router.push("/admin");
     } else {
-      alert("Wrong password");
+      alert("Invalid password or authenticator code");
     }
   };
 
@@ -31,10 +45,8 @@ export default function LoginPage() {
             className="absolute inset-0 w-full h-full object-cover"
           />
 
-          {/* soft dark overlay */}
           <div className="absolute inset-0 bg-black/30"></div>
 
-          {/* text on image */}
           <div className="absolute bottom-10 left-8 text-white max-w-xs">
             <p className="text-lg font-semibold">
               “Simply all the tools that my team and I need.”
@@ -61,7 +73,7 @@ export default function LoginPage() {
               Access the blog dashboard
             </p>
 
-            {/* password input */}
+            {/* PASSWORD */}
             <input
               type="password"
               placeholder="Enter Admin Password"
@@ -70,7 +82,16 @@ export default function LoginPage() {
               className="w-full border border-gray-200 p-3 rounded-lg mb-4 focus:outline-none focus:border-black transition"
             />
 
-            {/* login button */}
+            {/* GOOGLE AUTHENTICATOR */}
+            <input
+              type="text"
+              placeholder="Authenticator Code"
+              value={token}
+              onChange={(e) => setToken(e.target.value)}
+              className="w-full border border-gray-200 p-3 rounded-lg mb-4 focus:outline-none focus:border-black transition"
+            />
+
+            {/* LOGIN BUTTON */}
             <button
               onClick={handleLogin}
               className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-900 transition font-medium"

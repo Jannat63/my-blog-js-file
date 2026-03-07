@@ -2,16 +2,17 @@ import { NextResponse } from "next/server";
 import speakeasy from "speakeasy";
 
 export async function POST(req: Request) {
-  const { secret, code } = await req.json();
+  const { password, token } = await req.json();
 
-  if (secret !== process.env.ADMIN_PASSWORD) {
+  if (password !== process.env.ADMIN_PASSWORD) {
     return NextResponse.json({ success: false });
   }
 
   const verified = speakeasy.totp.verify({
     secret: process.env.ADMIN_2FA_SECRET!,
     encoding: "base32",
-    token: code,
+    token: token,
+    window: 1
   });
 
   if (!verified) {
