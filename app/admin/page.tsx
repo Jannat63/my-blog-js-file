@@ -128,7 +128,7 @@ export default function AdminPage() {
   if (!authorized) return null;
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className="admin-ui min-h-screen flex">
 
       {/* SIDEBAR */}
       <aside className="w-64 bg-white border-r p-6 hidden md:block">
@@ -182,20 +182,20 @@ export default function AdminPage() {
         {/* STATS */}
         <div className="grid md:grid-cols-3 gap-6 mb-10">
 
-          <div className="bg-white p-6 rounded-xl border hover:shadow-md transition">
-            <p className="text-gray-500 text-sm">Total Posts</p>
+          <div className="stat-card p-6 rounded-xl">
+            <p className="text-gray-400 text-sm">Total Posts</p>
             <p className="text-2xl font-bold">{posts.length}</p>
           </div>
 
-          <div className="bg-white p-6 rounded-xl border hover:shadow-md transition">
-            <p className="text-gray-500 text-sm">Published</p>
+          <div className="stat-card p-6 rounded-xl">
+            <p className="text-gray-400 text-sm">Published</p>
             <p className="text-2xl font-bold">
               {posts.filter((p) => p.status === "published").length}
             </p>
           </div>
 
-          <div className="bg-white p-6 rounded-xl border hover:shadow-md transition">
-            <p className="text-gray-500 text-sm">Drafts</p>
+          <div className="stat-card p-6 rounded-xl">
+            <p className="text-gray-400 text-sm">Drafts</p>
             <p className="text-2xl font-bold">
               {posts.filter((p) => p.status === "draft").length}
             </p>
@@ -291,7 +291,7 @@ export default function AdminPage() {
 
               <button
                 disabled={loading}
-                className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-900 transition font-medium"
+                className="btn-neon w-full py-3 font-medium"
               >
                 {loading ? "Saving..." : "Save Post"}
               </button>
