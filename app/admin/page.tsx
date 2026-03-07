@@ -131,7 +131,7 @@ export default function AdminPage() {
     <div className="admin-ui min-h-screen flex">
 
       {/* SIDEBAR */}
-      <aside className="w-64 bg-white border-r p-6 hidden md:block">
+      <aside className="w-64 glass p-6 hidden md:block">
         <h2 className="text-xl font-bold mb-8">Admin Panel</h2>
 
         <nav className="space-y-6 text-sm">
@@ -175,7 +175,7 @@ export default function AdminPage() {
           <h1 className="text-3xl font-bold">Dashboard Overview</h1>
 
           <div className="text-sm text-gray-500">
-            Logged in as <span className="font-medium text-black">Admin</span>
+            Logged in as <span className="font-medium text-white">Admin</span>
           </div>
         </div>
 
@@ -206,7 +206,7 @@ export default function AdminPage() {
         <div className="grid lg:grid-cols-2 gap-8">
 
           {/* CREATE POST */}
-          <div className="bg-white p-8 rounded-xl border shadow-sm">
+          <div className="glass p-8 rounded-xl">
 
             <h2 className="text-xl font-semibold mb-6">
               Create New Post
@@ -219,7 +219,7 @@ export default function AdminPage() {
                 value={form.title}
                 onChange={handleChange}
                 placeholder="Post Title"
-                className="w-full border border-gray-200 p-3 rounded-lg focus:border-black outline-none"
+                className="w-full bg-white/5 border border-white/10 p-3 rounded-lg outline-none"
                 required
               />
 
@@ -228,7 +228,7 @@ export default function AdminPage() {
                 value={form.excerpt}
                 onChange={handleChange}
                 placeholder="Short Description"
-                className="w-full border border-gray-200 p-3 rounded-lg focus:border-black outline-none"
+                className="w-full bg-white/5 border border-white/10 p-3 rounded-lg outline-none"
               />
 
               <RichEditor
@@ -241,7 +241,7 @@ export default function AdminPage() {
               <input
                 type="file"
                 accept="image/*"
-                className="w-full border border-gray-200 p-3 rounded-lg"
+                className="w-full bg-white/5 border border-white/10 p-3 rounded-lg"
                 onChange={async (e: any) => {
                   const file = e.target.files[0];
                   if (!file) return;
@@ -283,7 +283,7 @@ export default function AdminPage() {
                 name="status"
                 value={form.status}
                 onChange={handleChange}
-                className="w-full border border-gray-200 p-3 rounded-lg focus:border-black outline-none"
+                className="w-full bg-white/5 border border-white/10 p-3 rounded-lg outline-none"
               >
                 <option value="published">Publish</option>
                 <option value="draft">Save as Draft</option>
@@ -300,7 +300,7 @@ export default function AdminPage() {
           </div>
 
           {/* POSTS LIST */}
-          <div className="bg-white p-8 rounded-xl border shadow-sm">
+          <div className="glass p-8 rounded-xl">
 
             <h2 className="text-xl font-semibold mb-6">
               All Posts
@@ -311,7 +311,7 @@ export default function AdminPage() {
               {posts.map((post) => (
                 <div
                   key={post.id}
-                  className="border border-gray-200 p-4 rounded-xl bg-white hover:shadow-sm transition"
+                  className="glass p-4 rounded-xl hover:shadow-lg transition"
                 >
 
                   {editingId === post.id ? (
@@ -324,7 +324,7 @@ export default function AdminPage() {
                             title: e.target.value,
                           })
                         }
-                        className="w-full border border-gray-200 p-2 rounded-lg mb-3"
+                        className="w-full bg-white/5 border border-white/10 p-2 rounded-lg mb-3"
                       />
 
                       <RichEditor
@@ -345,7 +345,7 @@ export default function AdminPage() {
                             status: e.target.value,
                           })
                         }
-                        className="w-full border border-gray-200 p-2 rounded-lg mt-3"
+                        className="w-full bg-white/5 border border-white/10 p-2 rounded-lg mt-3"
                       >
                         <option value="published">Published</option>
                         <option value="draft">Draft</option>
@@ -391,8 +391,8 @@ export default function AdminPage() {
                           <span
                             className={`text-xs px-2 py-1 rounded ${
                               post.status === "published"
-                                ? "bg-green-100 text-green-700"
-                                : "bg-yellow-100 text-yellow-700"
+                                ? "bg-green-500/20 text-green-400"
+                                : "bg-yellow-500/20 text-yellow-400"
                             }`}
                           >
                             {post.status}
