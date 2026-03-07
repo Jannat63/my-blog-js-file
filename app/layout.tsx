@@ -2,6 +2,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BackToTop from "@/components/BackToTop";
+import Script from "next/script";
 
 export const metadata = {
   metadataBase: new URL("https://ahsansblog.netlify.app"),
@@ -53,8 +54,28 @@ export default function RootLayout({
 
         {children}
 
-        {/* Floating Back To Top Button */}
         <BackToTop />
+
+        {/* Google Translate Container */}
+        <div id="google_translate_element" style={{ display: "none" }}></div>
+
+        {/* Google Translate Init */}
+        <Script id="google-translate-init" strategy="afterInteractive">
+          {`
+            function googleTranslateElementInit() {
+              new google.translate.TranslateElement(
+                { pageLanguage: 'en', includedLanguages: 'en,bn' },
+                'google_translate_element'
+              );
+            }
+          `}
+        </Script>
+
+        {/* Google Translate Script */}
+        <Script
+          src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+          strategy="afterInteractive"
+        />
 
         <Footer />
 

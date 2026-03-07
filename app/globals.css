@@ -110,10 +110,8 @@ html {
 }
 
 /* =========================
-   RICH TEXT EDITOR FIX
+   RICH TEXT EDITOR
 ========================= */
-
-/* main editor */
 
 .admin-ui .ProseMirror {
   background: #0f172a !important;
@@ -126,13 +124,9 @@ html {
   border: 1px solid rgba(255,255,255,0.12) !important;
 }
 
-/* paragraphs */
-
 .admin-ui .ProseMirror p {
   color: #e5e7eb !important;
 }
-
-/* headings */
 
 .admin-ui .ProseMirror h1 {
   font-size: 28px !important;
@@ -152,14 +146,10 @@ html {
   color: #ffffff !important;
 }
 
-/* bold */
-
 .admin-ui .ProseMirror strong {
   color: #ffffff !important;
   font-weight: 700 !important;
 }
-
-/* list */
 
 .admin-ui .ProseMirror ul {
   padding-left: 20px !important;
@@ -170,32 +160,50 @@ html {
   margin-bottom: 6px !important;
 }
 
-/* focus */
-
 .admin-ui .ProseMirror:focus {
   outline: none !important;
   box-shadow: 0 0 0 2px #22c55e !important;
 }
 
 /* =========================
-   TOOLBAR FIX
+   LANGUAGE FLAGS
 ========================= */
 
-.admin-ui button {
-  color: #ffffff !important;
+.lang-flags {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-/* editor toolbar */
+.flag-btn {
+  font-size: 18px;
 
-.admin-ui .editor-toolbar {
-  background: rgba(255,255,255,0.04);
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  width: 36px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+
+  background: #ffffff;
+
+  cursor: pointer;
+
+  transition: all 0.25s ease;
 }
 
-/* editor wrapper */
+.flag-btn:hover {
+  background: #f3f4f6;
+  transform: translateY(-1px);
+}
 
-.admin-ui .editor-wrapper {
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 10px;
-  overflow: hidden;
+/* active language */
+
+.flag-btn.active {
+  border-color: #2563eb;
+  background: #eff6ff;
+  box-shadow: 0 0 0 2px rgba(37,99,235,0.15);
 }
