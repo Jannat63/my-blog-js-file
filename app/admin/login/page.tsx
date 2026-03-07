@@ -17,78 +17,72 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen flex bg-gray-100">
+    <main className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
 
-      {/* LEFT IMAGE PANEL */}
-      <div className="hidden md:flex w-1/2 relative">
+      {/* MAIN CONTAINER */}
+      <div className="w-full max-w-5xl bg-white rounded-2xl shadow-xl overflow-hidden grid md:grid-cols-2">
 
-        <img
-          src="/login.jpg"
-          alt="Login"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
+        {/* LEFT IMAGE */}
+        <div className="relative hidden md:block">
 
-        {/* Dark overlay */}
-        <div className="absolute inset-0 bg-black/40"></div>
+          <img
+            src="/login.jpg"
+            alt="Login"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
 
-        {/* Quote text */}
-        <div className="relative z-10 text-white p-12 flex flex-col justify-end">
+          {/* soft dark overlay */}
+          <div className="absolute inset-0 bg-black/30"></div>
 
-          <h2 className="text-2xl font-semibold leading-relaxed max-w-md">
-            “Simply all the tools that my team and I need.”
-          </h2>
+          {/* text on image */}
+          <div className="absolute bottom-10 left-8 text-white max-w-xs">
+            <p className="text-lg font-semibold">
+              “Simply all the tools that my team and I need.”
+            </p>
 
-          <p className="text-sm text-gray-300 mt-4">
-            Admin Dashboard
-          </p>
+            <p className="text-sm text-gray-200 mt-2">
+              Admin Dashboard
+            </p>
+          </div>
 
         </div>
 
-      </div>
 
+        {/* LOGIN PANEL */}
+        <div className="flex items-center justify-center p-10">
 
-      {/* RIGHT LOGIN PANEL */}
-      <div className="flex w-full md:w-1/2 items-center justify-center px-8">
+          <div className="w-full max-w-sm">
 
-        <div className="w-full max-w-md bg-white p-10 rounded-2xl shadow-xl border">
-
-          {/* Title */}
-          <div className="text-center mb-8">
-
-            <h1 className="text-2xl font-bold">
+            <h1 className="text-2xl font-bold text-center">
               Admin Login
             </h1>
 
-            <p className="text-sm text-gray-500 mt-2">
+            <p className="text-sm text-gray-500 text-center mt-2 mb-6">
               Access the blog dashboard
             </p>
 
+            {/* password input */}
+            <input
+              type="password"
+              placeholder="Enter Admin Password"
+              value={secret}
+              onChange={(e) => setSecret(e.target.value)}
+              className="w-full border border-gray-200 p-3 rounded-lg mb-4 focus:outline-none focus:border-black transition"
+            />
+
+            {/* login button */}
+            <button
+              onClick={handleLogin}
+              className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-900 transition font-medium"
+            >
+              Login
+            </button>
+
+            <p className="text-center text-xs text-gray-400 mt-6">
+              Ahsan's Blog Admin Panel
+            </p>
+
           </div>
-
-
-          {/* Password Field */}
-          <input
-            type="password"
-            placeholder="Enter Admin Password"
-            value={secret}
-            onChange={(e) => setSecret(e.target.value)}
-            className="w-full border border-gray-200 p-3 rounded-lg mb-5 focus:outline-none focus:border-black transition"
-          />
-
-
-          {/* Login Button */}
-          <button
-            onClick={handleLogin}
-            className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-900 transition font-medium"
-          >
-            Login
-          </button>
-
-
-          {/* Footer */}
-          <p className="text-center text-xs text-gray-400 mt-6">
-            Ahsan's Blog Admin Panel
-          </p>
 
         </div>
 
