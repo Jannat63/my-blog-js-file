@@ -49,7 +49,7 @@ export default function LoginPage() {
 
           <div className="absolute bottom-10 left-8 text-white max-w-xs">
             <p className="text-lg font-semibold">
-              “Simply all the tools that my team and I need.”
+              “Simply all the tools that I need.”
             </p>
 
             <p className="text-sm text-gray-200 mt-2">
