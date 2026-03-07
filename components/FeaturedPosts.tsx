@@ -4,8 +4,13 @@ import { calculateReadingTime } from "@/lib/readingTime";
 export default function FeaturedPosts({ posts }: any) {
   if (!posts.length) return null;
 
-  const main = posts[0];
-  const side = posts.slice(1, 4);
+  /* sort posts by date so newest post becomes featured */
+  const sortedPosts = [...posts].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
+
+  const main = sortedPosts[0];
+  const side = sortedPosts.slice(1, 4);
 
   return (
     <section className="max-w-[1100px] mx-auto px-6 mb-20 grid lg:grid-cols-2 gap-10">
@@ -23,6 +28,11 @@ export default function FeaturedPosts({ posts }: any) {
             </div>
           )}
 
+          {/* FEATURED LABEL */}
+<span className="inline-block text-xs font-semibold tracking-wide text-gray-700 bg-gray-100 px-3 py-1 rounded-full">
+  Latest Story
+</span>
+
           <h2 className="text-4xl font-semibold leading-snug font-[var(--font-playfair)]">
             {main.title}
           </h2>
@@ -39,31 +49,40 @@ export default function FeaturedPosts({ posts }: any) {
       </Link>
 
       {/* SIDE POSTS */}
-      <div className="space-y-8">
+      <div className="space-y-6">
 
-        {side.map((post: any) => (
-          <Link
-            key={post.slug}
-            href={`/blog/${post.slug}`}
-            className="flex gap-4 group"
-          >
-            {post.image && (
-              <img
-                src={post.image}
-                className="w-32 h-24 object-cover rounded-lg"
-              />
+        {side.map((post: any, index: number) => (
+          <div key={post.slug}>
+
+            {index !== 0 && (
+              <div className="border-t border-gray-200 mb-6"></div>
             )}
 
-            <div>
-              <h3 className="font-semibold group-hover:text-black transition">
-                {post.title}
-              </h3>
+            <Link
+              href={`/blog/${post.slug}`}
+              className="flex gap-4 group"
+            >
 
-              <p className="text-sm text-gray-500">
-                {calculateReadingTime(post.content)} • {post.date}
-              </p>
-            </div>
-          </Link>
+              {post.image && (
+                <img
+                  src={post.image}
+                  className="w-32 h-24 object-cover rounded-lg"
+                />
+              )}
+
+              <div>
+                <h3 className="font-semibold group-hover:text-black transition">
+                  {post.title}
+                </h3>
+
+                <p className="text-sm text-gray-500">
+                  {calculateReadingTime(post.content)} • {post.date}
+                </p>
+              </div>
+
+            </Link>
+
+          </div>
         ))}
 
       </div>
