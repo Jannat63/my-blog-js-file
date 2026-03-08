@@ -23,27 +23,33 @@ export default function FeaturedPosts({ posts }: any) {
             <div className="overflow-hidden rounded-2xl">
               <img
                 src={main.image}
+                alt={main.title}
                 className="w-full h-[420px] object-cover group-hover:scale-105 transition duration-500"
               />
             </div>
           )}
 
           {/* FEATURED LABEL */}
-<span className="inline-block text-xs font-semibold tracking-wide text-gray-700 bg-gray-100 px-3 py-1 rounded-full">
-  Latest Story
-</span>
+          <span className="inline-block text-xs font-semibold tracking-wide text-gray-700 bg-gray-100 px-3 py-1 rounded-full">
+            Latest Story
+          </span>
 
+          {/* Title */}
           <h2 className="text-4xl font-semibold leading-snug font-[var(--font-playfair)]">
             {main.title}
           </h2>
 
-          <p className="text-gray-600">
+          {/* Meta */}
+          <p className="text-gray-600 text-sm">
             {calculateReadingTime(main.content)} • {main.date}
           </p>
 
-          <p className="text-gray-600">
-            {main.excerpt}
-          </p>
+          {/* Excerpt */}
+          {main.excerpt && (
+            <p className="text-gray-600 leading-relaxed line-clamp-3">
+              {main.excerpt}
+            </p>
+          )}
 
         </div>
       </Link>
@@ -66,18 +72,23 @@ export default function FeaturedPosts({ posts }: any) {
               {post.image && (
                 <img
                   src={post.image}
+                  alt={post.title}
                   className="w-32 h-24 object-cover rounded-lg"
                 />
               )}
 
-              <div>
-                <h3 className="font-semibold group-hover:text-black transition">
+              <div className="space-y-1">
+
+                {/* Title */}
+                <h3 className="font-semibold group-hover:text-black transition line-clamp-2">
                   {post.title}
                 </h3>
 
+                {/* Meta */}
                 <p className="text-sm text-gray-500">
                   {calculateReadingTime(post.content)} • {post.date}
                 </p>
+
               </div>
 
             </Link>

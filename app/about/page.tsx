@@ -45,11 +45,11 @@ export default function AboutPage() {
         </h1>
 
         <p className="text-gray-500 mt-2">
-          Web Developer • Tech Writer • Digital Enthusiast
+          SEO Expart • Tech Writer • Digital Enthusiast
         </p>
 
         <p className="text-gray-700 mt-6 max-w-[600px] leading-relaxed">
-          I’m a web developer passionate about modern web technologies,
+          I’m a SEO expart about modern web technologies,
           artificial intelligence, and global digital trends. Through
           Ahsan's Blog, I explore complex topics and break them down into
           clear and simple insights for readers interested in technology,
