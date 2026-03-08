@@ -4,6 +4,9 @@ import { getPostBySlug, getSheetData } from "@/lib/googleSheets";
 import { notFound } from "next/navigation";
 import ReadingProgress from "@/components/ReadingProgress";
 import { calculateReadingTime } from "@/lib/readingTime";
+import Script from "next/script";
+
+const siteUrl = "https://ahsansblog.netlify.app";
 
 export async function generateMetadata({
   params,
@@ -15,10 +18,26 @@ export async function generateMetadata({
 
   if (!post) return {};
 
+  const url = `${siteUrl}/blog/${slug}`;
+
   return {
     title: post.metaTitle || post.title,
     description: post.metaDescription || post.excerpt,
+
+    alternates: {
+      canonical: url,
+    },
+
     openGraph: {
+      title: post.metaTitle || post.title,
+      description: post.metaDescription || post.excerpt,
+      url: url,
+      type: "article",
+      images: post.image ? [post.image] : [],
+    },
+
+    twitter: {
+      card: "summary_large_image",
       title: post.metaTitle || post.title,
       description: post.metaDescription || post.excerpt,
       images: post.image ? [post.image] : [],
@@ -44,11 +63,38 @@ export default async function BlogPost({
     .filter((p) => p.slug !== slug)
     .slice(0, 3);
 
-  const siteUrl = "https://ahsansblog.netlify.app";
+  const url = `${siteUrl}/blog/${slug}`;
 
   return (
     <>
       <ReadingProgress />
+
+      {/* Article Schema */}
+      <Script
+        id="article-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            headline: post.title,
+            description: post.metaDescription || post.excerpt,
+            image: post.image,
+            author: {
+              "@type": "Person",
+              name: "Ahsan Jannat",
+              url: `${siteUrl}/about`,
+            },
+            publisher: {
+              "@type": "Organization",
+              name: "Ahsan's Blog",
+              url: siteUrl,
+            },
+            datePublished: post.date,
+            mainEntityOfPage: url,
+          }),
+        }}
+      />
 
       <main className="min-h-screen bg-gray-50 px-6 py-16">
         <article className="max-w-4xl mx-auto bg-white p-10 md:p-14 rounded-2xl shadow-sm">
@@ -78,7 +124,7 @@ export default async function BlogPost({
 
           {/* Meta */}
           <div className="flex items-center gap-3 text-gray-500 text-sm mb-12">
-            <span>By Ahsan</span>
+            <span>By Ahsan Jannat</span>
             <span>•</span>
             <span>{post.date}</span>
             <span>•</span>
@@ -113,24 +159,27 @@ export default async function BlogPost({
             <div className="flex gap-4 text-sm">
 
               <a
-                href={`https://twitter.com/intent/tweet?url=${siteUrl}/blog/${slug}`}
+                href={`https://twitter.com/intent/tweet?url=${url}`}
                 target="_blank"
+                rel="noopener noreferrer"
                 className="px-4 py-2 bg-black text-white rounded-lg"
               >
                 Twitter
               </a>
 
               <a
-                href={`https://www.facebook.com/sharer/sharer.php?u=${siteUrl}/blog/${slug}`}
+                href={`https://www.facebook.com/sharer/sharer.php?u=${url}`}
                 target="_blank"
+                rel="noopener noreferrer"
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg"
               >
                 Facebook
               </a>
 
               <a
-                href={`https://www.linkedin.com/sharing/share-offsite/?url=${siteUrl}/blog/${slug}`}
+                href={`https://www.linkedin.com/sharing/share-offsite/?url=${url}`}
                 target="_blank"
+                rel="noopener noreferrer"
                 className="px-4 py-2 bg-blue-700 text-white rounded-lg"
               >
                 LinkedIn

@@ -1,13 +1,20 @@
 export const dynamic = "force-dynamic";
 
+import Script from "next/script";
 import { getSheetData } from "@/lib/googleSheets";
 import FeaturedPosts from "@/components/FeaturedPosts";
 import PostGrid from "@/components/PostGrid";
+import Hero from "@/components/Hero";
+
+export const metadata = {
+  title: "Ahsan's Blog | Technology, AI & Global Trends",
+  description:
+    "A modern journal exploring technology, artificial intelligence, internet culture, and global trends shaping our digital future.",
+};
 
 export default async function Home() {
   const posts = await getSheetData();
 
-  // SORT newest first
   const sortedPosts = posts.sort(
     (a: any, b: any) =>
       new Date(b.date).getTime() - new Date(a.date).getTime()
@@ -17,26 +24,33 @@ export default async function Home() {
   const rest = sortedPosts.slice(4);
 
   return (
-    <main className="pt-24">
+    <main>
+
+      {/* Website Schema */}
+      <Script
+        id="website-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "Ahsan's Blog",
+            url: "https://ahsansblog.netlify.app",
+            author: {
+              "@type": "Person",
+              name: "Ahsan Jannat",
+            },
+          }),
+        }}
+      />
 
       {/* HERO */}
-      <section className="max-w-5xl mx-auto px-6 text-center mb-20">
+      <Hero />
 
-        <h1 className="text-5xl md:text-6xl font-semibold leading-tight mb-6 font-[var(--font-playfair)]">
-          Welcome.
-        </h1>
-
-        <p className="text-gray-600 text-lg leading-relaxed max-w-2xl mx-auto">
-          A modern journal exploring technology, internet culture,
-          and the trends shaping our digital future.
-        </p>
-
-      </section>
-
-      {/* FEATURED */}
+      {/* FEATURED POSTS */}
       <FeaturedPosts posts={featured} />
 
-      {/* GRID */}
+      {/* POST GRID */}
       <PostGrid posts={rest} />
 
     </main>

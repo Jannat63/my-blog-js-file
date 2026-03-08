@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Script from "next/script";
 import { FaLinkedin, FaFacebook, FaEnvelope, FaWhatsapp, FaGlobe } from "react-icons/fa";
 
 export const metadata = {
@@ -10,6 +11,23 @@ export const metadata = {
 export default function AboutPage() {
   return (
     <main className="max-w-[900px] mx-auto px-6 py-16">
+        <Script
+  id="author-schema"
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Person",
+      name: "Ahsan Jannat",
+      url: "https://ahsansblog.netlify.app",
+      sameAs: [
+        "https://www.linkedin.com/in/ahsan-jannat/",
+        "https://www.facebook.com/ahsan.jnat.2024/",
+        "https://ahsan-jannat.netlify.app/"
+      ]
+    })
+  }}
+/>
 
       {/* Hero */}
       <section className="flex flex-col items-center text-center">
@@ -17,9 +35,9 @@ export default function AboutPage() {
         <Image
           src="/ahsan-jannat-author.png"
           alt="Ahsan Jannat"
-          width={160}
-          height={160}
-          className="rounded-full mb-6 shadow-md"
+          width={170}
+          height={170}
+          className="rounded-full shadow-md border border-gray-200 mb-6"
         />
 
         <h1 className="text-3xl font-bold">
@@ -40,6 +58,8 @@ export default function AboutPage() {
 
       </section>
 
+      {/* Divider */}
+      <div className="mt-16 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
 
       {/* About Blog */}
       <section className="mt-16">
@@ -58,87 +78,88 @@ export default function AboutPage() {
 
       </section>
 
+      {/* Two Column Section */}
+      <section className="mt-20 grid grid-cols-1 md:grid-cols-2 gap-16">
 
-      {/* Expertise */}
-      <section className="mt-16">
+        {/* Expertise */}
+        <div>
 
-        <h2 className="text-2xl font-semibold mb-4">
-          Author Expertise
-        </h2>
+          <h2 className="text-2xl font-semibold mb-4">
+            Author Expertise
+          </h2>
 
-        <p className="text-gray-700 leading-relaxed mb-4">
-          My work focuses on building modern web experiences and
-          exploring emerging technologies. You can explore my projects
-          and development work in my portfolio.
-        </p>
-
-        <a
-          href="https://ahsan-jannat.netlify.app/"
-          target="_blank"
-          className="flex items-center gap-2 text-blue-600 hover:underline"
-        >
-          <FaGlobe />
-          View My Portfolio
-        </a>
-
-      </section>
-
-
-      {/* Contact */}
-      <section className="mt-16">
-
-        <h2 className="text-2xl font-semibold mb-4">
-          Contact
-        </h2>
-
-        <div className="flex flex-col gap-3 text-gray-700">
+          <p className="text-gray-700 leading-relaxed mb-4">
+            My work focuses on building modern web experiences and
+            exploring emerging technologies. You can explore my projects
+            and development work in my portfolio.
+          </p>
 
           <a
-            href="mailto:ajbmix63@gmail.com"
-            className="flex items-center gap-2 hover:text-black"
-          >
-            <FaEnvelope />
-            ajbmix63@gmail.com
-          </a>
-
-          <a
-            href="https://wa.me/8801643644550"
+            href="https://ahsan-jannat.netlify.app/"
             target="_blank"
-            className="flex items-center gap-2 hover:text-black"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-blue-600 hover:underline"
           >
-            <FaWhatsapp />
-            +8801643644550
+            <FaGlobe />
+            View My Portfolio
           </a>
 
         </div>
 
-      </section>
+        {/* Contact + Social */}
+        <div>
 
+          <h2 className="text-2xl font-semibold mb-4">
+            Contact
+          </h2>
 
-      {/* Social */}
-      <section className="mt-16">
+          <div className="flex flex-col gap-3 text-gray-700 mb-10">
 
-        <h2 className="text-2xl font-semibold mb-4">
-          Social Profiles
-        </h2>
+            <a
+              href="mailto:ajbmix63@gmail.com"
+              className="flex items-center gap-2 hover:text-black"
+            >
+              <FaEnvelope />
+              ajbmix63@gmail.com
+            </a>
 
-        <div className="flex gap-6 text-xl text-gray-600">
+            <a
+              href="https://wa.me/8801643644550"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 hover:text-black"
+            >
+              <FaWhatsapp />
+              +8801643644550
+            </a>
 
-          <a
-            href="https://www.linkedin.com/in/ahsan-jannat/"
-            target="_blank"
-            className="hover:text-blue-600"
-          >
-            <FaLinkedin />
-          </a>
+          </div>
 
-          <a
-            href="https://www.facebook.com/ahsan.jnat.2024/"
-            target="_blank"
-            className="hover:text-blue-500"
-          >
-            <FaFacebook />
-          </a>
+          <h2 className="text-2xl font-semibold mb-4">
+            Social Profiles
+          </h2>
+
+          <div className="flex gap-6 text-xl text-gray-600">
+
+            <a
+              href="https://www.linkedin.com/in/ahsan-jannat/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-blue-600"
+            >
+              <FaLinkedin />
+            </a>
+
+            <a
+              href="https://www.facebook.com/ahsan.jnat.2024/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-blue-500"
+            >
+              <FaFacebook />
+            </a>
+
+          </div>
 
         </div>
 

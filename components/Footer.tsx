@@ -1,8 +1,7 @@
 import Link from "next/link";
-import Image from "next/image";
 import {
   FaLinkedin,
-  FaGlobe,
+  FaFacebook,
   FaEnvelope,
   FaWhatsapp,
   FaArrowUp,
@@ -16,33 +15,6 @@ export default function Footer() {
       <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
 
       <div className="max-w-[1100px] mx-auto px-6 py-12">
-
-        {/* Top Intro */}
-        <div className="mb-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-
-          <div className="flex items-center gap-3">
-
-            <Image
-              src="/logo.png"
-              alt="Ahsan's Blog Logo"
-              width={32}
-              height={32}
-              priority
-            />
-
-            <div>
-              <h2 className="text-xl font-semibold">
-                Ahsan's Blog
-              </h2>
-
-              <p className="text-sm text-gray-500">
-                Writer exploring modern web experiences.
-              </p>
-            </div>
-
-          </div>
-
-        </div>
 
         {/* Footer Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 text-sm">
@@ -68,19 +40,13 @@ export default function Footer() {
             <ul className="space-y-2 text-gray-500">
 
               <li>
-                <Link
-                  href="/about"
-                  className="hover:text-black transition"
-                >
+                <Link href="/about" className="hover:text-black transition">
                   About
                 </Link>
               </li>
 
               <li>
-                <Link
-                  href="/privacy-policy"
-                  className="hover:text-black transition"
-                >
+                <Link href="/privacy-policy" className="hover:text-black transition">
                   Privacy Policy
                 </Link>
               </li>
@@ -101,7 +67,6 @@ export default function Footer() {
                   href="https://www.linkedin.com/in/ahsan-jannat/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label="LinkedIn Profile"
                   className="flex items-center gap-2 hover:text-black transition"
                 >
                   <FaLinkedin />
@@ -111,14 +76,13 @@ export default function Footer() {
 
               <li>
                 <a
-                  href="https://ahsan-jannat.netlify.app/"
+                  href="https://www.facebook.com/ahsan.jnat.2024/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label="Portfolio Website"
                   className="flex items-center gap-2 hover:text-black transition"
                 >
-                  <FaGlobe />
-                  Portfolio
+                  <FaFacebook />
+                  Facebook
                 </a>
               </li>
 
@@ -136,7 +100,6 @@ export default function Footer() {
               <li>
                 <a
                   href="mailto:ajbmix63@gmail.com"
-                  aria-label="Send Email"
                   className="flex items-center gap-2 hover:text-black transition"
                 >
                   <FaEnvelope />
@@ -149,7 +112,6 @@ export default function Footer() {
                   href="https://wa.me/8801643644550"
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label="WhatsApp Contact"
                   className="flex items-center gap-2 hover:text-black transition"
                 >
                   <FaWhatsapp />
