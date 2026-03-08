@@ -14,9 +14,9 @@ export default function BlogCard({
   slug,
 }: BlogCardProps) {
   return (
-    <Link href={`/blog/${slug}`} className="block group">
+    <Link href={`/blog/${slug}`} className="block group h-full">
 
-      <div className="bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
+      <div className="bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col h-full">
 
         {/* Image */}
         <div className="h-48 bg-gray-200 overflow-hidden">
@@ -24,24 +24,26 @@ export default function BlogCard({
             <img
               src={image}
               alt={title}
-              loading="lazy"
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
           )}
         </div>
 
         {/* Content */}
-        <div className="p-6">
+        <div className="p-6 flex flex-col flex-grow">
 
-          <h2 className="text-xl font-semibold mb-2 group-hover:text-black transition">
+          {/* Title */}
+          <h2 className="text-xl font-semibold mb-2 line-clamp-2">
             {title}
           </h2>
 
-          <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+          {/* Excerpt */}
+          <p className="text-gray-600 text-sm mb-4 line-clamp-3 flex-grow">
             {excerpt}
           </p>
 
-          <span className="text-black font-medium">
+          {/* Read more */}
+          <span className="text-black font-medium mt-auto">
             Read More →
           </span>
 
