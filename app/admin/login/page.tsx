@@ -6,9 +6,15 @@ import { useRouter } from "next/navigation";
 export default function LoginPage() {
   const [secret, setSecret] = useState("");
   const [token, setToken] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const router = useRouter();
 
   const handleLogin = async () => {
+    if (loading) return;
+
+    setLoading(true);
+
     const res = await fetch("/api/admin-login", {
       method: "POST",
       headers: {
@@ -28,6 +34,8 @@ export default function LoginPage() {
     } else {
       alert("Invalid password or authenticator code");
     }
+
+    setLoading(false);
   };
 
   return (
@@ -45,7 +53,7 @@ export default function LoginPage() {
             className="absolute inset-0 w-full h-full object-cover"
           />
 
-          <div className="absolute inset-0 bg-black/30"></div>
+          <div className="absolute inset-0 bg-black/40"></div>
 
           <div className="absolute bottom-10 left-8 text-white max-w-xs">
             <p className="text-lg font-semibold">
@@ -58,7 +66,6 @@ export default function LoginPage() {
           </div>
 
         </div>
-
 
         {/* LOGIN PANEL */}
         <div className="flex items-center justify-center p-10">
@@ -73,31 +80,48 @@ export default function LoginPage() {
               Access the blog dashboard
             </p>
 
-            {/* PASSWORD */}
-            <input
-              type="password"
-              placeholder="Enter Admin Password"
-              value={secret}
-              onChange={(e) => setSecret(e.target.value)}
-              className="w-full border border-gray-200 p-3 rounded-lg mb-4 focus:outline-none focus:border-black transition"
-            />
-
-            {/* GOOGLE AUTHENTICATOR */}
-            <input
-              type="text"
-              placeholder="Authenticator Code"
-              value={token}
-              onChange={(e) => setToken(e.target.value)}
-              className="w-full border border-gray-200 p-3 rounded-lg mb-4 focus:outline-none focus:border-black transition"
-            />
-
-            {/* LOGIN BUTTON */}
-            <button
-              onClick={handleLogin}
-              className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-900 transition font-medium"
+            {/* FORM */}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleLogin();
+              }}
             >
-              Login
-            </button>
+
+              {/* PASSWORD */}
+              <input
+                type="password"
+                placeholder="Enter Admin Password"
+                value={secret}
+                onChange={(e) => setSecret(e.target.value)}
+                className="w-full border border-gray-200 p-3 rounded-lg mb-4 focus:outline-none focus:border-black transition"
+              />
+
+              {/* GOOGLE AUTHENTICATOR */}
+              <input
+                type="text"
+                placeholder="Authenticator Code"
+                value={token}
+                onChange={(e) => setToken(e.target.value)}
+                className="w-full border border-gray-200 p-3 rounded-lg mb-4 focus:outline-none focus:border-black transition"
+              />
+
+              {/* LOGIN BUTTON */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-900 transition font-medium disabled:opacity-70 flex items-center justify-center gap-2"
+              >
+
+                {loading && (
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                )}
+
+                {loading ? "Logging in..." : "Login"}
+
+              </button>
+
+            </form>
 
             <p className="text-center text-xs text-gray-400 mt-6">
               Ahsan's Blog Admin Panel

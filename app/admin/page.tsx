@@ -125,7 +125,13 @@ export default function AdminPage() {
     }
   };
 
-  if (!authorized) return null;
+  if (!authorized) {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <p className="text-gray-500 text-sm">Checking authorization...</p>
+    </div>
+  );
+}
 
   return (
     <div className="admin-ui min-h-screen flex">
