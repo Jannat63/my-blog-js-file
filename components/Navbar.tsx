@@ -65,6 +65,13 @@ export default function Navbar() {
           </Link>
 
           <Link
+            href="/articles"
+            className="px-4 py-2 rounded-lg text-gray-600 hover:text-black hover:bg-gray-100 hover:underline transition"
+          >
+            Articles
+          </Link>
+
+          <Link
             href="/about"
             className="px-4 py-2 rounded-lg text-gray-600 hover:text-black hover:bg-gray-100 hover:underline transition"
           >
@@ -112,12 +119,12 @@ export default function Navbar() {
             Home
           </Link>
 
-          <Link href="/about" className="block text-gray-700">
-            About
+          <Link href="/articles" className="block text-gray-700">
+            Articles
           </Link>
 
-          <Link href="/articles" className="px-4 py-2 rounded-lg text-gray-600 hover:text-black hover:bg-gray-100 hover:underline transition">
-          Articles
+          <Link href="/about" className="block text-gray-700">
+            About
           </Link>
 
           <div className="flex gap-3 pt-2">
