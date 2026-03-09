@@ -1,8 +1,5 @@
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import BackToTop from "@/components/BackToTop";
-import Script from "next/script";
+import LayoutClient from "./layoutClient";
 
 export const metadata = {
   metadataBase: new URL("https://ahsansblog.netlify.app"),
@@ -18,7 +15,7 @@ export const metadata = {
   openGraph: {
     title: "Ahsan Jannat Blog",
     description:
-      "Writing about development, design and the internet. A minimalist digital garden by Ahsan Jannat.",
+      "Writing about development, design and the internet.",
     url: "https://ahsansblog.netlify.app",
     siteName: "Ahsan Blog",
     images: [
@@ -50,34 +47,9 @@ export default function RootLayout({
     <html lang="en" id="top">
       <body className="bg-white text-gray-900 antialiased">
 
-        <Navbar />
-
-        {children}
-
-        <BackToTop />
-
-        {/* Google Translate Container */}
-        <div id="google_translate_element" style={{ display: "none" }}></div>
-
-        {/* Google Translate Init */}
-        <Script id="google-translate-init" strategy="afterInteractive">
-          {`
-            function googleTranslateElementInit() {
-              new google.translate.TranslateElement(
-                { pageLanguage: 'en', includedLanguages: 'en,bn' },
-                'google_translate_element'
-              );
-            }
-          `}
-        </Script>
-
-        {/* Google Translate Script */}
-        <Script
-          src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
-          strategy="afterInteractive"
-        />
-
-        <Footer />
+        <LayoutClient>
+          {children}
+        </LayoutClient>
 
       </body>
     </html>

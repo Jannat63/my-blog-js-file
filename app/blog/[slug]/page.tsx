@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import ReadingProgress from "@/components/ReadingProgress";
 import { calculateReadingTime } from "@/lib/readingTime";
 import Script from "next/script";
+import Comments from "@/components/Comments";
 
 const siteUrl = "https://ahsansblog.netlify.app";
 
@@ -198,6 +199,8 @@ export default async function BlogPost({
               readers understand important global developments.
             </p>
           </div>
+
+          <Comments slug={slug} />
 
           {/* Related Posts */}
           {relatedPosts.length > 0 && (

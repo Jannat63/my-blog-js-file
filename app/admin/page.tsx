@@ -5,442 +5,575 @@ import { useRouter } from "next/navigation";
 import RichEditor from "@/components/RichEditor";
 
 export default function AdminPage() {
-  const router = useRouter();
 
-  const [authorized, setAuthorized] = useState(false);
+const router = useRouter();
 
-  const [form, setForm] = useState({
-    title: "",
-    excerpt: "",
-    content: "",
-    image: "",
-    status: "published",
-  });
+const [authorized,setAuthorized] = useState(false);
 
-  const [posts, setPosts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
+const [tab,setTab] = useState("posts");
 
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editForm, setEditForm] = useState<any>({});
+const [form,setForm] = useState({
+title:"",
+excerpt:"",
+content:"",
+image:"",
+status:"published"
+});
 
-  useEffect(() => {
-    const isAdmin = sessionStorage.getItem("admin");
-    if (!isAdmin) {
-      router.push("/admin/login");
-    } else {
-      setAuthorized(true);
-    }
-  }, [router]);
+const [posts,setPosts] = useState<any[]>([]);
+const [comments,setComments] = useState<any[]>([]);
+const [loading,setLoading] = useState(false);
 
-  const fetchPosts = async () => {
-    const res = await fetch("/api/get-posts");
-    const data = await res.json();
-    setPosts(data.reverse());
-  };
+const [editingId,setEditingId] = useState<string | null>(null);
+const [editForm,setEditForm] = useState<any>({});
 
-  useEffect(() => {
-    if (authorized) {
-      fetchPosts();
-    }
-  }, [authorized]);
+useEffect(()=>{
 
-  const handleChange = (e: any) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+const isAdmin = sessionStorage.getItem("admin");
 
-  const handleCreate = async (e: any) => {
-    e.preventDefault();
-    setLoading(true);
-
-    const res = await fetch("/api/add-post", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ...form,
-        secret: process.env.NEXT_PUBLIC_ADMIN_SECRET,
-      }),
-    });
-
-    const data = await res.json();
-
-    if (data.success) {
-      setForm({
-        title: "",
-        excerpt: "",
-        content: "",
-        image: "",
-        status: "published",
-      });
-      fetchPosts();
-    } else {
-      alert(data.error);
-    }
-
-    setLoading(false);
-  };
-
-  const handleDelete = async (id: string) => {
-    if (!confirm("Delete this post?")) return;
-
-    const res = await fetch("/api/delete-post", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id,
-        secret: process.env.NEXT_PUBLIC_ADMIN_SECRET,
-      }),
-    });
-
-    const data = await res.json();
-
-    if (data.success) {
-      fetchPosts();
-    } else {
-      alert(data.error);
-    }
-  };
-
-  const handleEdit = (post: any) => {
-    setEditingId(post.id);
-    setEditForm(post);
-  };
-
-  const handleUpdate = async () => {
-    const res = await fetch("/api/update-post", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ...editForm,
-        secret: process.env.NEXT_PUBLIC_ADMIN_SECRET,
-      }),
-    });
-
-    const data = await res.json();
-
-    if (data.success) {
-      setEditingId(null);
-      fetchPosts();
-    } else {
-      alert(data.error);
-    }
-  };
-
-  if (!authorized) {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <p className="text-gray-500 text-sm">Checking authorization...</p>
-    </div>
-  );
+if(!isAdmin){
+router.push("/admin/login");
+}else{
+setAuthorized(true);
 }
 
-  return (
-    <div className="admin-ui min-h-screen flex">
+},[router]);
 
-      {/* SIDEBAR */}
-      <aside className="w-64 glass p-6 hidden md:block">
-        <h2 className="text-xl font-bold mb-8">Admin Panel</h2>
+const fetchPosts = async()=>{
 
-        <nav className="space-y-6 text-sm">
+const res = await fetch("/api/get-posts");
+const data = await res.json();
 
-          <div>
-            <p className="font-semibold text-gray-400 uppercase text-xs mb-3">
-              Dashboard
-            </p>
+setPosts(data.reverse());
 
-            <div className="space-y-2">
-              <p className="px-3 py-2 rounded-lg bg-gray-100 font-medium">
-                Create Post
-              </p>
+};
 
-              <p className="px-3 py-2 rounded-lg hover:bg-gray-100 cursor-pointer transition">
-                All Posts
-              </p>
-            </div>
-          </div>
+const fetchComments = async()=>{
 
-          <hr />
+const res = await fetch("/api/admin-comments");
+const data = await res.json();
 
-          <button
-            onClick={() => {
-              sessionStorage.removeItem("admin");
-              router.push("/admin/login");
-            }}
-            className="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition"
-          >
-            Logout
-          </button>
+setComments(data);
 
-        </nav>
-      </aside>
+};
 
-      {/* MAIN CONTENT */}
-      <div className="flex-1 p-8">
+useEffect(()=>{
 
-        {/* HEADER */}
-        <div className="flex justify-between items-center mb-10">
-          <h1 className="text-3xl font-bold">Dashboard Overview</h1>
+if(authorized){
+fetchPosts();
+fetchComments();
+}
 
-          <div className="text-sm text-gray-500">
-            Logged in as <span className="font-medium text-white">Admin</span>
-          </div>
-        </div>
+},[authorized]);
 
-        {/* STATS */}
-        <div className="grid md:grid-cols-3 gap-6 mb-10">
+const handleChange = (e:any)=>{
 
-          <div className="stat-card p-6 rounded-xl">
-            <p className="text-gray-400 text-sm">Total Posts</p>
-            <p className="text-2xl font-bold">{posts.length}</p>
-          </div>
+setForm({
+...form,
+[e.target.name]:e.target.value
+});
 
-          <div className="stat-card p-6 rounded-xl">
-            <p className="text-gray-400 text-sm">Published</p>
-            <p className="text-2xl font-bold">
-              {posts.filter((p) => p.status === "published").length}
-            </p>
-          </div>
+};
 
-          <div className="stat-card p-6 rounded-xl">
-            <p className="text-gray-400 text-sm">Drafts</p>
-            <p className="text-2xl font-bold">
-              {posts.filter((p) => p.status === "draft").length}
-            </p>
-          </div>
+const handleCreate = async(e:any)=>{
 
-        </div>
+e.preventDefault();
+setLoading(true);
 
-        <div className="grid lg:grid-cols-2 gap-8">
+const res = await fetch("/api/add-post",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+...form,
+secret:process.env.NEXT_PUBLIC_ADMIN_SECRET
+})
+});
 
-          {/* CREATE POST */}
-          <div className="glass p-8 rounded-xl">
+const data = await res.json();
 
-            <h2 className="text-xl font-semibold mb-6">
-              Create New Post
-            </h2>
+if(data.success){
 
-            <form onSubmit={handleCreate} className="space-y-4">
+setForm({
+title:"",
+excerpt:"",
+content:"",
+image:"",
+status:"published"
+});
 
-              <input
-                name="title"
-                value={form.title}
-                onChange={handleChange}
-                placeholder="Post Title"
-                className="w-full bg-white/5 border border-white/10 p-3 rounded-lg outline-none"
-                required
-              />
+fetchPosts();
 
-              <input
-                name="excerpt"
-                value={form.excerpt}
-                onChange={handleChange}
-                placeholder="Short Description"
-                className="w-full bg-white/5 border border-white/10 p-3 rounded-lg outline-none"
-              />
+}else{
+alert(data.error);
+}
 
-              <div className="border border-white/10 rounded-lg overflow-hidden">
-  <RichEditor
-    content={form.content}
-    onChange={(value) =>
-      setForm({ ...form, content: value })
-    }
-  />
+setLoading(false);
+
+};
+
+const handleDelete = async(id:string)=>{
+
+if(!confirm("Delete this post?")) return;
+
+const res = await fetch("/api/delete-post",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+id,
+secret:process.env.NEXT_PUBLIC_ADMIN_SECRET
+})
+});
+
+const data = await res.json();
+
+if(data.success){
+fetchPosts();
+}else{
+alert(data.error);
+}
+
+};
+
+const handleEdit = (post:any)=>{
+setEditingId(post.id);
+setEditForm(post);
+};
+
+const handleUpdate = async()=>{
+
+const res = await fetch("/api/update-post",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+...editForm,
+secret:process.env.NEXT_PUBLIC_ADMIN_SECRET
+})
+});
+
+const data = await res.json();
+
+if(data.success){
+setEditingId(null);
+fetchPosts();
+}else{
+alert(data.error);
+}
+
+};
+
+const approveComment = async(id:string)=>{
+
+await fetch("/api/approve-comment",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({id})
+});
+
+fetchComments();
+
+};
+
+const deleteComment = async(id:string)=>{
+
+await fetch("/api/delete-comment",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({id})
+});
+
+fetchComments();
+
+};
+
+if(!authorized){
+
+return(
+<div className="min-h-screen flex items-center justify-center bg-gray-100">
+<p className="text-gray-500 text-sm">
+Checking authorization...
+</p>
+</div>
+);
+
+}
+
+return(
+
+<div className="admin-ui min-h-screen flex">
+
+
+
+{/* MAIN */}
+
+<div className="flex-1 p-8">
+
+{/* HEADER */}
+
+<div className="flex justify-between items-center mb-8">
+
+  <h1 className="text-3xl font-bold">
+    Admin Dashboard
+  </h1>
+
+  <div className="flex items-center gap-3">
+
+    <a
+      href="/"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition"
+    >
+      View Site
+    </a>
+
+    <button
+      onClick={()=>{
+        sessionStorage.removeItem("admin");
+        router.push("/admin/login");
+      }}
+      className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-600 transition"
+    >
+      Logout
+    </button>
+
+  </div>
+
 </div>
 
-              <input
-                type="file"
-                accept="image/*"
-                className="w-full bg-white/5 border border-white/10 p-3 rounded-lg"
-                onChange={async (e: any) => {
-                  const file = e.target.files[0];
-                  if (!file) return;
+{/* TABS */}
+<div className="flex gap-3 mb-10">
 
-                  const reader = new FileReader();
+  <button
+    onClick={() => setTab("posts")}
+    className={`px-5 py-2 rounded-lg font-medium transition ${
+      tab === "posts"
+        ? "bg-black text-white shadow"
+        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+    }`}
+  >
+    Posts
+  </button>
 
-                  reader.onloadend = async () => {
-                    const res = await fetch("/api/upload-image", {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({
-                        file: reader.result,
-                        secret: process.env.NEXT_PUBLIC_ADMIN_SECRET,
-                      }),
-                    });
+  <button
+    onClick={() => setTab("comments")}
+    className={`px-5 py-2 rounded-lg font-medium transition ${
+      tab === "comments"
+        ? "bg-black text-white shadow"
+        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+    }`}
+  >
+    Comments
+  </button>
 
-                    const data = await res.json();
+  <button
+    onClick={() => setTab("analytics")}
+    className={`px-5 py-2 rounded-lg font-medium transition ${
+      tab === "analytics"
+        ? "bg-black text-white shadow"
+        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+    }`}
+  >
+    Analytics
+  </button>
 
-                    if (data.url) {
-                      setForm({ ...form, image: data.url });
-                    } else {
-                      alert("Image upload failed");
-                    }
-                  };
+</div>
 
-                  reader.readAsDataURL(file);
-                }}
-              />
+{/* POSTS TAB */}
 
-              {form.image && (
-                <img
-                  src={form.image}
-                  alt="Preview"
-                  className="w-full h-48 object-cover rounded-lg mt-4"
-                />
-              )}
+{tab==="posts" && (
 
-              <select
-                name="status"
-                value={form.status}
-                onChange={handleChange}
-                className="w-full bg-white/5 border border-white/10 p-3 rounded-lg outline-none"
-              >
-                <option value="published">Publish</option>
-                <option value="draft">Save as Draft</option>
-              </select>
+<div className="grid lg:grid-cols-2 gap-8">
 
-              <button
-                disabled={loading}
-                className="btn-neon w-full py-3 font-medium"
-              >
-                {loading ? "Saving..." : "Save Post"}
-              </button>
+{/* CREATE POST */}
 
-            </form>
-          </div>
+<div className="glass p-8 rounded-xl">
 
-          {/* POSTS LIST */}
-          <div className="glass p-8 rounded-xl">
+<h2 className="text-xl font-semibold mb-6">
+Create New Post
+</h2>
 
-            <h2 className="text-xl font-semibold mb-6">
-              All Posts
-            </h2>
+<form onSubmit={handleCreate} className="space-y-4">
 
-            <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
+<input
+name="title"
+value={form.title}
+onChange={handleChange}
+placeholder="Post Title"
+className="w-full bg-white/5 border border-white/10 p-3 rounded-lg outline-none"
+required
+/>
 
-              {posts.map((post) => (
-                <div
-                  key={post.id}
-                  className="glass p-4 rounded-xl hover:shadow-lg transition"
-                >
+<input
+name="excerpt"
+value={form.excerpt}
+onChange={handleChange}
+placeholder="Short Description"
+className="w-full bg-white/5 border border-white/10 p-3 rounded-lg outline-none"
+/>
 
-                  {editingId === post.id ? (
-                    <>
-                      <input
-                        value={editForm.title}
-                        onChange={(e) =>
-                          setEditForm({
-                            ...editForm,
-                            title: e.target.value,
-                          })
-                        }
-                        className="w-full bg-white/5 border border-white/10 p-2 rounded-lg mb-3"
-                      />
+<div className="border border-white/10 rounded-lg overflow-hidden">
 
-                      <RichEditor
-                        content={editForm.content}
-                        onChange={(value) =>
-                          setEditForm({
-                            ...editForm,
-                            content: value,
-                          })
-                        }
-                      />
+<RichEditor
+content={form.content}
+onChange={(value)=>setForm({...form,content:value})}
+/>
 
-                      <select
-                        value={editForm.status}
-                        onChange={(e) =>
-                          setEditForm({
-                            ...editForm,
-                            status: e.target.value,
-                          })
-                        }
-                        className="w-full bg-white/5 border border-white/10 p-2 rounded-lg mt-3"
-                      >
-                        <option value="published">Published</option>
-                        <option value="draft">Draft</option>
-                      </select>
+</div>
 
-                      <div className="flex gap-3 mt-3">
+<input
+type="file"
+accept="image/*"
+className="w-full bg-white/5 border border-white/10 p-3 rounded-lg"
+onChange={async (e:any)=>{
 
-                        <button
-                          onClick={handleUpdate}
-                          className="bg-green-600 text-white px-3 py-1 rounded-lg text-sm"
-                        >
-                          Save
-                        </button>
+const file = e.target.files[0];
+if(!file) return;
 
-                        <button
-                          onClick={() => setEditingId(null)}
-                          className="bg-gray-400 text-white px-3 py-1 rounded-lg text-sm"
-                        >
-                          Cancel
-                        </button>
+const reader = new FileReader();
 
-                      </div>
-                    </>
-                  ) : (
+reader.onloadend = async ()=>{
 
-                    <div className="flex items-center justify-between">
+const res = await fetch("/api/upload-image",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+file:reader.result,
+secret:process.env.NEXT_PUBLIC_ADMIN_SECRET
+})
+});
 
-                      <div className="flex items-center gap-4">
+const data = await res.json();
 
-                        {post.image && (
-                          <img
-                            src={post.image}
-                            alt={post.title}
-                            className="w-14 h-14 object-cover rounded-lg"
-                          />
-                        )}
+if(data.url){
+setForm({...form,image:data.url});
+}else{
+alert("Image upload failed");
+}
 
-                        <div>
-                          <h3 className="font-semibold">
-                            {post.title}
-                          </h3>
+};
 
-                          <span
-                            className={`text-xs px-2 py-1 rounded ${
-                              post.status === "published"
-                                ? "bg-green-500/20 text-green-400"
-                                : "bg-yellow-500/20 text-yellow-400"
-                            }`}
-                          >
-                            {post.status}
-                          </span>
-                        </div>
+reader.readAsDataURL(file);
 
-                      </div>
+}}
+/>
 
-                      <div className="flex gap-3">
+{form.image && (
+<img
+src={form.image}
+alt="Preview"
+className="w-full h-48 object-cover rounded-lg mt-4"
+/>
+)}
 
-                        <button
-                          onClick={() => handleEdit(post)}
-                          className="text-blue-500 text-sm"
-                        >
-                          Edit
-                        </button>
+<select
+name="status"
+value={form.status}
+onChange={handleChange}
+className="w-full bg-white/5 border border-white/10 p-3 rounded-lg outline-none"
+>
+<option value="published">Publish</option>
+<option value="draft">Save as Draft</option>
+</select>
 
-                        <button
-                          onClick={() => handleDelete(post.id)}
-                          className="text-red-500 text-sm"
-                        >
-                          Delete
-                        </button>
+<button
+disabled={loading}
+className="btn-neon w-full py-3 font-medium"
+>
+{loading ? "Saving..." : "Save Post"}
+</button>
 
-                      </div>
+</form>
 
-                    </div>
+</div>
 
-                  )}
+{/* POSTS LIST */}
 
-                </div>
-              ))}
+<div className="glass p-8 rounded-xl">
 
-            </div>
+<h2 className="text-xl font-semibold mb-6">
+All Posts
+</h2>
 
-          </div>
+<div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
 
-        </div>
+{posts.map((post,index)=>(
+<div key={post.id || index} className="glass p-4 rounded-xl">
 
-      </div>
-    </div>
-  );
+{editingId===post.id ? (
+
+<>
+
+<input
+value={editForm.title}
+onChange={(e)=>setEditForm({...editForm,title:e.target.value})}
+className="w-full bg-white/5 border border-white/10 p-2 rounded-lg mb-3"
+/>
+
+<RichEditor
+content={editForm.content}
+onChange={(value)=>setEditForm({...editForm,content:value})}
+/>
+
+<div className="flex gap-3 mt-3">
+
+<button
+onClick={handleUpdate}
+className="bg-green-600 text-white px-3 py-1 rounded-lg text-sm"
+>
+Save
+</button>
+
+<button
+onClick={()=>setEditingId(null)}
+className="bg-gray-400 text-white px-3 py-1 rounded-lg text-sm"
+>
+Cancel
+</button>
+
+</div>
+
+</>
+
+) : (
+
+<div className="flex items-center justify-between">
+
+<div>
+<h3 className="font-semibold">{post.title}</h3>
+
+<span className="text-xs">{post.status}</span>
+</div>
+
+<div className="flex gap-3">
+
+<button
+onClick={()=>handleEdit(post)}
+className="text-blue-500 text-sm"
+>
+Edit
+</button>
+
+<button
+onClick={()=>handleDelete(post.id)}
+className="text-red-500 text-sm"
+>
+Delete
+</button>
+
+</div>
+
+</div>
+
+)}
+
+</div>
+))}
+
+</div>
+
+</div>
+
+</div>
+
+)}
+
+{/* COMMENTS TAB */}
+
+{tab==="comments" && (
+
+<div className="glass p-8 rounded-xl">
+
+<h2 className="text-xl font-semibold mb-6">
+Comment Moderation
+</h2>
+
+<div className="space-y-4">
+
+{comments.map((c,index)=>(
+<div key={c.id || index} className="border p-4 rounded-lg">
+
+<p className="font-semibold">{c.name}</p>
+
+<p className="text-xs text-gray-400 mb-2">
+{c.postSlug} • {c.date}
+</p>
+
+<p className="mb-3">{c.comment}</p>
+
+<div className="flex gap-3">
+
+{c.status!=="approved" && (
+<button
+onClick={()=>approveComment(c.id)}
+className="bg-green-600 text-white px-3 py-1 rounded"
+>
+Approve
+</button>
+)}
+
+<button
+onClick={()=>deleteComment(c.id)}
+className="bg-red-600 text-white px-3 py-1 rounded"
+>
+Delete
+</button>
+
+</div>
+
+</div>
+))}
+
+</div>
+
+</div>
+
+)}
+
+{/* ANALYTICS TAB */}
+
+{tab==="analytics" && (
+
+<div className="grid md:grid-cols-3 gap-6">
+
+<div className="stat-card p-6 rounded-xl">
+<p className="text-gray-400 text-sm">Total Posts</p>
+<p className="text-2xl font-bold">{posts.length}</p>
+</div>
+
+<div className="stat-card p-6 rounded-xl">
+<p className="text-gray-400 text-sm">Published</p>
+<p className="text-2xl font-bold">
+{posts.filter(p=>p.status==="published").length}
+</p>
+</div>
+
+<div className="stat-card p-6 rounded-xl">
+<p className="text-gray-400 text-sm">Drafts</p>
+<p className="text-2xl font-bold">
+{posts.filter(p=>p.status==="draft").length}
+</p>
+</div>
+
+<div className="stat-card p-6 rounded-xl">
+<p className="text-gray-400 text-sm">Total Comments</p>
+<p className="text-2xl font-bold">{comments.length}</p>
+</div>
+
+<div className="stat-card p-6 rounded-xl">
+<p className="text-gray-400 text-sm">Pending Comments</p>
+<p className="text-2xl font-bold">
+{comments.filter(c=>c.status!=="approved").length}
+</p>
+</div>
+
+</div>
+
+)}
+
+</div>
+
+</div>
+
+);
+
 }
