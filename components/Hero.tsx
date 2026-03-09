@@ -5,7 +5,7 @@ export default function Hero() {
       <div className="space-y-8 max-w-3xl">
 
         <h1 className="text-5xl md:text-6xl font-bold leading-tight tracking-tight">
-          Ahsan's Blog
+          Welcome
         </h1>
 
         <p className="text-lg md:text-xl text-gray-600 leading-relaxed">
@@ -16,7 +16,7 @@ export default function Hero() {
         <div className="flex items-center gap-4 pt-2">
 
           <a
-            href="#latest"
+            href="/articles"
             className="bg-black text-white px-6 py-3 rounded-lg text-sm hover:bg-gray-800 transition"
           >
             Explore Articles

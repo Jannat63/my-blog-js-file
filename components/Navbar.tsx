@@ -116,6 +116,10 @@ export default function Navbar() {
             About
           </Link>
 
+          <Link href="/articles" className="px-4 py-2 rounded-lg text-gray-600 hover:text-black hover:bg-gray-100 hover:underline transition">
+          Articles
+          </Link>
+
           <div className="flex gap-3 pt-2">
 
             <button

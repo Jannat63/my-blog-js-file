@@ -1,4 +1,5 @@
 import BlogCard from "@/components/BlogCard";
+import Link from "next/link";
 
 export default function TrendingPosts({ posts }: any) {
 
@@ -9,10 +10,23 @@ export default function TrendingPosts({ posts }: any) {
   return (
     <section className="max-w-[1100px] mx-auto px-6 mb-24">
 
-      <h2 className="text-2xl font-semibold mb-10">
-        🔥 Trending Posts
-      </h2>
+      {/* Section Header */}
+      <div className="flex items-center justify-between mb-10">
 
+        <h2 className="text-2xl font-semibold">
+          🔥 Trending Posts
+        </h2>
+
+        <Link
+          href="/articles"
+          className="text-sm text-gray-600 hover:text-black transition"
+        >
+          View All →
+        </Link>
+
+      </div>
+
+      {/* Posts Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
 
         {trending.map((post:any)=>(
