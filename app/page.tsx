@@ -5,6 +5,7 @@ import { getSheetData } from "@/lib/googleSheets";
 import FeaturedPosts from "@/components/FeaturedPosts";
 import PostGrid from "@/components/PostGrid";
 import Hero from "@/components/Hero";
+import TrendingPosts from "@/components/TrendingPosts";
 
 export const metadata = {
   title: "Ahsan's Blog | Technology, AI & Global Trends",
@@ -44,14 +45,13 @@ export default async function Home() {
         }}
       />
 
-      {/* HERO */}
-      <Hero />
+<Hero />
 
-      {/* FEATURED POSTS */}
-      <FeaturedPosts posts={featured} />
+<FeaturedPosts posts={featured} />
 
-      {/* POST GRID */}
-      <PostGrid posts={rest} />
+<TrendingPosts posts={sortedPosts} />
+
+<PostGrid posts={sortedPosts.slice(8)} />
 
     </main>
   );

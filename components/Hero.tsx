@@ -1,22 +1,37 @@
 export default function Hero() {
   return (
-    <section className="max-w-6xl mx-auto px-6 pt-28 pb-24">
+    <section className="max-w-[1100px] mx-auto px-6 pt-28 pb-24">
 
-      <div className="border-l-4 border-black pl-8">
+      <div className="space-y-8 max-w-3xl">
 
-        {/* Heading */}
-        <h1 className="text-6xl md:text-7xl font-bold tracking-tight leading-tight bg-gradient-to-r from-black via-gray-700 to-gray-500 bg-clip-text text-transparent">
-          Welcome<span className="text-gray-400">.</span>
+        <h1 className="text-5xl md:text-6xl font-bold leading-tight tracking-tight">
+          Ahsan's Blog
         </h1>
 
-        {/* Subtitle */}
-        <p className="mt-8 text-lg md:text-xl text-gray-600 leading-relaxed max-w-2xl">
-  Insights on <span className="font-medium text-gray-800">technology</span>, 
-  artificial intelligence, internet culture, and the global trends shaping our digital future.
-</p>
+        <p className="text-lg md:text-xl text-gray-600 leading-relaxed">
+          Thoughts on technology, artificial intelligence, internet culture,
+          and the digital world shaping our future.
+        </p>
 
-        {/* subtle divider */}
-        <div className="mt-10 h-px w-32 bg-gradient-to-r from-black/60 to-transparent"></div>
+        <div className="flex items-center gap-4 pt-2">
+
+          <a
+            href="#latest"
+            className="bg-black text-white px-6 py-3 rounded-lg text-sm hover:bg-gray-800 transition"
+          >
+            Explore Articles
+          </a>
+
+          <a
+            href="/about"
+            className="text-sm font-medium text-gray-700 hover:underline"
+          >
+            About Me
+          </a>
+
+        </div>
+
+        <div className="h-px w-32 bg-gradient-to-r from-black/60 to-transparent"></div>
 
       </div>
 
