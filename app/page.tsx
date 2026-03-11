@@ -14,15 +14,19 @@ export const metadata = {
 };
 
 export default async function Home() {
+
   const posts = await getSheetData();
 
-  const sortedPosts = posts.sort(
+  /* SEO safety: prevent draft posts appearing on homepage */
+  const publishedPosts = posts.filter((post: any) => post.status === "published");
+
+  /* safer sorting (prevents mutation issues) */
+  const sortedPosts = [...publishedPosts].sort(
     (a: any, b: any) =>
       new Date(b.date).getTime() - new Date(a.date).getTime()
   );
 
   const featured = sortedPosts.slice(0, 4);
-  const rest = sortedPosts.slice(4);
 
   return (
     <main>
@@ -45,13 +49,82 @@ export default async function Home() {
         }}
       />
 
-<Hero />
+      {/* ItemList Schema for Homepage Posts */}
+      <Script
+        id="post-list-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            itemListElement: sortedPosts.slice(0, 10).map((post: any, index: number) => ({
+              "@type": "ListItem",
+              position: index + 1,
+              url: `https://ahsansblog.netlify.app/post/${post.slug}`,
+            })),
+          }),
+        }}
+      />
 
-<FeaturedPosts posts={featured} />
+      {/* BlogPosting Schema */}
+      <Script
+        id="homepage-blogposting-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": sortedPosts.slice(0, 8).map((post: any) => ({
+              "@type": "BlogPosting",
+              headline: post.title,
+              image: post.image,
+              datePublished: post.date,
+              author: {
+                "@type": "Person",
+                name: "Ahsan Jannat",
+              },
+              publisher: {
+                "@type": "Organization",
+                name: "Ahsan's Blog",
+              },
+              url: `https://ahsansblog.netlify.app/post/${post.slug}`,
+            })),
+          }),
+        }}
+      />
 
-<TrendingPosts posts={sortedPosts} />
+      {/* NewsArticle Schema (Discover / Top Stories signal) */}
+      <Script
+        id="homepage-news-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": sortedPosts.slice(0, 5).map((post: any) => ({
+              "@type": "NewsArticle",
+              headline: post.title,
+              image: post.image,
+              datePublished: post.date,
+              author: {
+                "@type": "Person",
+                name: "Ahsan Jannat",
+              },
+              publisher: {
+                "@type": "Organization",
+                name: "Ahsan's Blog",
+              },
+              mainEntityOfPage: `https://ahsansblog.netlify.app/post/${post.slug}`,
+            })),
+          }),
+        }}
+      />
 
-<PostGrid posts={sortedPosts.slice(8)} />
+      <Hero />
+
+      <FeaturedPosts posts={featured} />
+
+      <TrendingPosts posts={sortedPosts} />
+
+      <PostGrid posts={sortedPosts.slice(8)} />
 
     </main>
   );

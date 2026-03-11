@@ -9,7 +9,6 @@ export default function AdminPage() {
 const router = useRouter();
 
 const [authorized,setAuthorized] = useState(false);
-
 const [tab,setTab] = useState("posts");
 
 const [form,setForm] = useState({
@@ -23,6 +22,7 @@ status:"published"
 const [posts,setPosts] = useState<any[]>([]);
 const [comments,setComments] = useState<any[]>([]);
 const [loading,setLoading] = useState(false);
+const [uploading,setUploading] = useState(false);
 
 const [editingId,setEditingId] = useState<string | null>(null);
 const [editForm,setEditForm] = useState<any>({});
@@ -136,7 +136,16 @@ alert(data.error);
 
 const handleEdit = (post:any)=>{
 setEditingId(post.id);
-setEditForm(post);
+
+setEditForm({
+id: post.id,
+title: post.title,
+excerpt: post.excerpt,
+content: post.content,
+image: post.image,
+status: post.status
+});
+
 };
 
 const handleUpdate = async()=>{
@@ -199,82 +208,78 @@ Checking authorization...
 
 return(
 
-<div className="admin-ui min-h-screen flex">
+<div className="min-h-screen bg-gray-50 flex">
 
-
-
-{/* MAIN */}
-
-<div className="flex-1 p-8">
+<div className="flex-1 p-10 max-w-7xl mx-auto">
 
 {/* HEADER */}
 
-<div className="flex justify-between items-center mb-8">
+<div className="flex justify-between items-center mb-10">
 
-  <h1 className="text-3xl font-bold">
-    Admin Dashboard
-  </h1>
+<h1 className="text-3xl font-bold text-gray-800">
+Admin Dashboard
+</h1>
 
-  <div className="flex items-center gap-3">
+<div className="flex gap-3">
 
-    <a
-      href="/"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition"
-    >
-      View Site
-    </a>
+<a
+href="/"
+target="_blank"
+className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition"
+>
+View Site
+</a>
 
-    <button
-      onClick={()=>{
-        sessionStorage.removeItem("admin");
-        router.push("/admin/login");
-      }}
-      className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-600 transition"
-    >
-      Logout
-    </button>
+<button
+onClick={()=>{
+sessionStorage.removeItem("admin");
+router.push("/admin/login");
+}}
+className="px-4 py-2 bg-red-500 text-white rounded-lg text-sm hover:bg-red-600 transition"
+>
+Logout
+</button>
 
-  </div>
+</div>
 
 </div>
 
 {/* TABS */}
+
 <div className="flex gap-3 mb-10">
 
-  <button
-    onClick={() => setTab("posts")}
-    className={`px-5 py-2 rounded-lg font-medium transition ${
-      tab === "posts"
-        ? "bg-black text-white shadow"
-        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-    }`}
-  >
-    Posts
-  </button>
+<button
+onClick={()=>setTab("posts")}
+className={`px-5 py-2 rounded-lg font-medium transition ${
+tab==="posts"
+? "bg-black text-white"
+: "bg-gray-200"
+}`}
+>
+Posts
+</button>
 
-  <button
-    onClick={() => setTab("comments")}
-    className={`px-5 py-2 rounded-lg font-medium transition ${
-      tab === "comments"
-        ? "bg-black text-white shadow"
-        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-    }`}
-  >
-    Comments
-  </button>
+<button
+onClick={()=>setTab("comments")}
+className={`px-5 py-2 rounded-lg font-medium transition ${
+tab==="comments"
+? "bg-black text-white"
+: "bg-gray-200"
+}`}
+>
+Comments
+</button>
 
-  <button
-    onClick={() => setTab("analytics")}
-    className={`px-5 py-2 rounded-lg font-medium transition ${
-      tab === "analytics"
-        ? "bg-black text-white shadow"
-        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-    }`}
-  >
-    Analytics
-  </button>
+<button
+onClick={()=>setTab("analytics")}
+className={`px-5 py-2 rounded-lg font-medium transition ${
+tab==="analytics"
+? "bg-black text-white"
+: "bg-gray-200"
+}`}
+>
+Analytics
+</button>
 
 </div>
 
@@ -282,11 +287,11 @@ return(
 
 {tab==="posts" && (
 
-<div className="grid lg:grid-cols-2 gap-8">
+<div className="grid lg:grid-cols-2 gap-10">
 
 {/* CREATE POST */}
 
-<div className="glass p-8 rounded-xl">
+<div className="bg-white p-8 rounded-xl shadow-sm border">
 
 <h2 className="text-xl font-semibold mb-6">
 Create New Post
@@ -299,8 +304,7 @@ name="title"
 value={form.title}
 onChange={handleChange}
 placeholder="Post Title"
-className="w-full bg-white/5 border border-white/10 p-3 rounded-lg outline-none"
-required
+className="w-full border p-3 rounded-lg"
 />
 
 <input
@@ -308,26 +312,24 @@ name="excerpt"
 value={form.excerpt}
 onChange={handleChange}
 placeholder="Short Description"
-className="w-full bg-white/5 border border-white/10 p-3 rounded-lg outline-none"
+className="w-full border p-3 rounded-lg"
 />
-
-<div className="border border-white/10 rounded-lg overflow-hidden">
 
 <RichEditor
 content={form.content}
 onChange={(value)=>setForm({...form,content:value})}
 />
 
-</div>
-
 <input
 type="file"
 accept="image/*"
-className="w-full bg-white/5 border border-white/10 p-3 rounded-lg"
+className="w-full border p-3 rounded-lg"
 onChange={async (e:any)=>{
 
 const file = e.target.files[0];
 if(!file) return;
+
+setUploading(true);
 
 const reader = new FileReader();
 
@@ -350,6 +352,8 @@ setForm({...form,image:data.url});
 alert("Image upload failed");
 }
 
+setUploading(false);
+
 };
 
 reader.readAsDataURL(file);
@@ -357,11 +361,16 @@ reader.readAsDataURL(file);
 }}
 />
 
+{uploading && (
+<p className="text-sm text-gray-500">
+Uploading image...
+</p>
+)}
+
 {form.image && (
 <img
 src={form.image}
-alt="Preview"
-className="w-full h-48 object-cover rounded-lg mt-4"
+className="w-full h-48 object-cover rounded-lg"
 />
 )}
 
@@ -369,7 +378,7 @@ className="w-full h-48 object-cover rounded-lg mt-4"
 name="status"
 value={form.status}
 onChange={handleChange}
-className="w-full bg-white/5 border border-white/10 p-3 rounded-lg outline-none"
+className="w-full border p-3 rounded-lg"
 >
 <option value="published">Publish</option>
 <option value="draft">Save as Draft</option>
@@ -377,7 +386,7 @@ className="w-full bg-white/5 border border-white/10 p-3 rounded-lg outline-none"
 
 <button
 disabled={loading}
-className="btn-neon w-full py-3 font-medium"
+className="w-full bg-black text-white py-3 rounded-lg"
 >
 {loading ? "Saving..." : "Save Post"}
 </button>
@@ -388,25 +397,31 @@ className="btn-neon w-full py-3 font-medium"
 
 {/* POSTS LIST */}
 
-<div className="glass p-8 rounded-xl">
+<div className="bg-white p-8 rounded-xl shadow-sm border">
 
 <h2 className="text-xl font-semibold mb-6">
 All Posts
 </h2>
 
-<div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
+<div className="space-y-4 max-h-[650px] overflow-y-auto pr-2">
 
-{posts.map((post,index)=>(
-<div key={post.id || index} className="glass p-4 rounded-xl">
+{posts.map((post)=>(
+<div key={post.id} className="border rounded-xl p-4">
 
 {editingId===post.id ? (
 
-<>
+<div className="space-y-3">
 
 <input
 value={editForm.title}
 onChange={(e)=>setEditForm({...editForm,title:e.target.value})}
-className="w-full bg-white/5 border border-white/10 p-2 rounded-lg mb-3"
+className="w-full border p-2 rounded-lg"
+/>
+
+<input
+value={editForm.excerpt}
+onChange={(e)=>setEditForm({...editForm,excerpt:e.target.value})}
+className="w-full border p-2 rounded-lg"
 />
 
 <RichEditor
@@ -414,48 +429,75 @@ content={editForm.content}
 onChange={(value)=>setEditForm({...editForm,content:value})}
 />
 
-<div className="flex gap-3 mt-3">
+<input
+value={editForm.image}
+onChange={(e)=>setEditForm({...editForm,image:e.target.value})}
+className="w-full border p-2 rounded-lg"
+/>
+
+<select
+value={editForm.status}
+onChange={(e)=>setEditForm({...editForm,status:e.target.value})}
+className="w-full border p-2 rounded-lg"
+>
+<option value="published">Publish</option>
+<option value="draft">Draft</option>
+</select>
+
+<div className="flex gap-3 pt-2">
 
 <button
 onClick={handleUpdate}
-className="bg-green-600 text-white px-3 py-1 rounded-lg text-sm"
+className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm"
 >
 Save
 </button>
 
 <button
 onClick={()=>setEditingId(null)}
-className="bg-gray-400 text-white px-3 py-1 rounded-lg text-sm"
+className="bg-gray-400 text-white px-4 py-2 rounded-lg text-sm"
 >
 Cancel
 </button>
 
 </div>
 
-</>
+</div>
 
 ) : (
 
 <div className="flex items-center justify-between">
 
 <div>
-<h3 className="font-semibold">{post.title}</h3>
 
-<span className="text-xs">{post.status}</span>
+<h3 className="font-semibold text-gray-800">
+{post.title}
+</h3>
+
+<span
+className={`text-xs px-2 py-1 rounded-full ${
+post.status==="published"
+? "bg-green-100 text-green-700"
+: "bg-yellow-100 text-yellow-700"
+}`}
+>
+{post.status}
+</span>
+
 </div>
 
-<div className="flex gap-3">
+<div className="flex gap-4">
 
 <button
 onClick={()=>handleEdit(post)}
-className="text-blue-500 text-sm"
+className="text-blue-600 text-sm"
 >
 Edit
 </button>
 
 <button
 onClick={()=>handleDelete(post.id)}
-className="text-red-500 text-sm"
+className="text-red-600 text-sm"
 >
 Delete
 </button>
@@ -481,7 +523,7 @@ Delete
 
 {tab==="comments" && (
 
-<div className="glass p-8 rounded-xl">
+<div className="bg-white p-8 rounded-xl border">
 
 <h2 className="text-xl font-semibold mb-6">
 Comment Moderation
@@ -489,8 +531,8 @@ Comment Moderation
 
 <div className="space-y-4">
 
-{comments.map((c,index)=>(
-<div key={c.id || index} className="border p-4 rounded-lg">
+{comments.map((c)=>(
+<div key={c.id} className="border p-4 rounded-lg">
 
 <p className="font-semibold">{c.name}</p>
 
@@ -529,38 +571,38 @@ Delete
 
 )}
 
-{/* ANALYTICS TAB */}
+{/* ANALYTICS */}
 
 {tab==="analytics" && (
 
 <div className="grid md:grid-cols-3 gap-6">
 
-<div className="stat-card p-6 rounded-xl">
-<p className="text-gray-400 text-sm">Total Posts</p>
+<div className="bg-white p-6 rounded-xl border">
+<p className="text-gray-500 text-sm">Total Posts</p>
 <p className="text-2xl font-bold">{posts.length}</p>
 </div>
 
-<div className="stat-card p-6 rounded-xl">
-<p className="text-gray-400 text-sm">Published</p>
+<div className="bg-white p-6 rounded-xl border">
+<p className="text-gray-500 text-sm">Published</p>
 <p className="text-2xl font-bold">
 {posts.filter(p=>p.status==="published").length}
 </p>
 </div>
 
-<div className="stat-card p-6 rounded-xl">
-<p className="text-gray-400 text-sm">Drafts</p>
+<div className="bg-white p-6 rounded-xl border">
+<p className="text-gray-500 text-sm">Drafts</p>
 <p className="text-2xl font-bold">
 {posts.filter(p=>p.status==="draft").length}
 </p>
 </div>
 
-<div className="stat-card p-6 rounded-xl">
-<p className="text-gray-400 text-sm">Total Comments</p>
+<div className="bg-white p-6 rounded-xl border">
+<p className="text-gray-500 text-sm">Total Comments</p>
 <p className="text-2xl font-bold">{comments.length}</p>
 </div>
 
-<div className="stat-card p-6 rounded-xl">
-<p className="text-gray-400 text-sm">Pending Comments</p>
+<div className="bg-white p-6 rounded-xl border">
+<p className="text-gray-500 text-sm">Pending Comments</p>
 <p className="text-2xl font-bold">
 {comments.filter(c=>c.status!=="approved").length}
 </p>

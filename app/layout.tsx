@@ -12,6 +12,14 @@ export const metadata = {
     google: "pC5ifp-SvCoNRqB2kPePKkuRSUOM6y_A-PGenzoopgs",
   },
 
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      "max-image-preview": "large",
+    },
+  },
+
   openGraph: {
     title: "Ahsan Jannat Blog",
     description:
@@ -36,6 +44,7 @@ export const metadata = {
       "Writing about development, design and the internet.",
     images: ["/og-image.png"],
   },
+
 };
 
 export default function RootLayout({
@@ -45,6 +54,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" id="top">
+
+      <head>
+        {/* Performance improvement: preload main OG image */}
+        <link
+          rel="preload"
+          as="image"
+          href="/og-image.png"
+        />
+      </head>
+
       <body className="bg-white text-gray-900 antialiased">
 
         <LayoutClient>
@@ -52,6 +71,7 @@ export default function RootLayout({
         </LayoutClient>
 
       </body>
+
     </html>
   );
 }
