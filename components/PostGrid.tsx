@@ -1,4 +1,5 @@
 import BlogCard from "@/components/BlogCard";
+import Link from "next/link";
 
 export default function PostGrid({ posts }: any) {
 
@@ -13,8 +14,15 @@ export default function PostGrid({ posts }: any) {
       <div className="flex items-center justify-between mb-10">
 
         <h2 className="text-2xl font-semibold">
-          Latest Articles
+          📰 Latest Articles
         </h2>
+
+        <Link
+          href="/articles"
+          className="text-sm font-medium text-gray-600 hover:text-black transition"
+        >
+          View All →
+        </Link>
 
       </div>
 
