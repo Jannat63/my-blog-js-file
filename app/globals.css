@@ -222,3 +222,11 @@ html {
 .animate-slideUp {
   animation: slideUp 0.35s ease;
 }
+
+.nav-link {
+  @apply px-4 py-2 rounded-lg text-gray-600 hover:text-black hover:bg-gray-100 transition;
+}
+
+.mobile-link {
+  @apply block text-gray-700 w-full;
+}

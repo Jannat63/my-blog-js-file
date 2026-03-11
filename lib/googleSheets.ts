@@ -8,7 +8,12 @@ const auth = new google.auth.GoogleAuth({
   scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"],
 });
 
+/* ----------------------------------
+   BLOG POSTS
+----------------------------------- */
+
 export async function getSheetData() {
+
   const sheets = google.sheets({ version: "v4", auth });
 
   const response = await sheets.spreadsheets.values.get({
@@ -26,12 +31,11 @@ export async function getSheetData() {
     content: row[4],
     image: row[5],
     date: row[6],
-    status: row[7] || "draft", // fallback safety
+    status: row[7] || "draft",
     metaTitle: row[8],
     metaDescription: row[9],
   }));
 
-  // 🔐 Only published posts are public
   return posts.filter(
     (post) =>
       post.status &&
@@ -39,7 +43,12 @@ export async function getSheetData() {
   );
 }
 
+/* ----------------------------------
+   GET SINGLE POST
+----------------------------------- */
+
 export async function getPostBySlug(slug: string) {
+
   const posts = await getSheetData();
 
   return posts.find(
@@ -48,11 +57,12 @@ export async function getPostBySlug(slug: string) {
       post.slug.toString().trim().toLowerCase() ===
         slug.toString().trim().toLowerCase()
   );
+
 }
 
-/* -----------------------------
-   TV CHANNELS (Watch TV Page)
--------------------------------- */
+/* ----------------------------------
+   TV CHANNELS
+----------------------------------- */
 
 export async function getTVChannels() {
 
@@ -60,7 +70,7 @@ export async function getTVChannels() {
 
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId: process.env.GOOGLE_SHEET_ID,
-    range: "TV_CHANNELS!A2:F1000",
+    range: "TV_CHANNELS!A2:E1000",
   });
 
   const rows = res.data.values || [];
@@ -70,8 +80,7 @@ export async function getTVChannels() {
     category: row[1],
     name: row[2],
     youtube_url: row[3],
-    thumbnail: row[4],
-    status: row[5],
+    status: row[4],
   }));
 
   return channels.filter(
@@ -79,4 +88,5 @@ export async function getTVChannels() {
       c.status &&
       c.status.toString().trim().toLowerCase() === "active"
   );
+
 }

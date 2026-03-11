@@ -32,6 +32,8 @@ export default function Navbar() {
     window.location.reload();
   };
 
+  const closeMenu = () => setOpen(false);
+
   return (
     <header className="border-b bg-white/80 backdrop-blur sticky top-0 z-40">
 
@@ -57,31 +59,19 @@ export default function Navbar() {
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-4 text-sm">
 
-          <Link
-            href="/"
-            className="px-4 py-2 rounded-lg text-gray-600 hover:text-black hover:bg-gray-100 hover:underline transition"
-          >
+          <Link href="/" className="nav-link">
             Home
           </Link>
 
-          <Link
-            href="/articles"
-            className="px-4 py-2 rounded-lg text-gray-600 hover:text-black hover:bg-gray-100 hover:underline transition"
-          >
+          <Link href="/articles" className="nav-link">
             Articles
           </Link>
 
-          <Link
-            href="/watch-tv"
-            className="px-4 py-2 rounded-lg text-gray-600 hover:text-black hover:bg-gray-100 hover:underline transition"
-          >
+          <Link href="/watch-tv" className="nav-link">
             📺 Watch TV
           </Link>
 
-          <Link
-            href="/about"
-            className="px-4 py-2 rounded-lg text-gray-600 hover:text-black hover:bg-gray-100 hover:underline transition"
-          >
+          <Link href="/about" className="nav-link">
             About
           </Link>
 
@@ -89,7 +79,6 @@ export default function Navbar() {
 
             <button
               onClick={() => changeLang("en")}
-              aria-label="Switch to English"
               className={`flag-btn ${lang === "en" ? "active" : ""}`}
             >
               🇺🇸
@@ -97,7 +86,6 @@ export default function Navbar() {
 
             <button
               onClick={() => changeLang("bn")}
-              aria-label="Switch to Bangla"
               className={`flag-btn ${lang === "bn" ? "active" : ""}`}
             >
               🇧🇩
@@ -119,37 +107,49 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Menu */}
-      {open && (
-        <div className="md:hidden border-t px-6 py-4 space-y-3">
 
-          <Link href="/" className="block text-gray-700">
+      <div
+        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+          open ? "max-h-[400px] border-t" : "max-h-0"
+        }`}
+      >
+
+        <div className="px-6 py-4 flex flex-col gap-4">
+
+          <Link href="/" onClick={closeMenu} className="mobile-link">
             Home
           </Link>
 
-          <Link href="/articles" className="block text-gray-700">
+          <Link href="/articles" onClick={closeMenu} className="mobile-link">
             Articles
           </Link>
 
-          <Link href="/watch-tv" className="block text-gray-700">
+          <Link href="/watch-tv" onClick={closeMenu} className="mobile-link">
             📺 Watch TV
           </Link>
 
-          <Link href="/about" className="block text-gray-700">
+          <Link href="/about" onClick={closeMenu} className="mobile-link">
             About
           </Link>
 
-          <div className="flex gap-3 pt-2">
+          {/* Language buttons */}
+
+          <div className="flex flex-col gap-2 pt-2 w-full">
 
             <button
               onClick={() => changeLang("en")}
-              className={`flag-btn ${lang === "en" ? "active" : ""}`}
+              className={`flag-btn w-full text-left ${
+                lang === "en" ? "active" : ""
+              }`}
             >
               🇺🇸 English
             </button>
 
             <button
               onClick={() => changeLang("bn")}
-              className={`flag-btn ${lang === "bn" ? "active" : ""}`}
+              className={`flag-btn w-full text-left ${
+                lang === "bn" ? "active" : ""
+              }`}
             >
               🇧🇩 বাংলা
             </button>
@@ -157,7 +157,8 @@ export default function Navbar() {
           </div>
 
         </div>
-      )}
+
+      </div>
 
     </header>
   );
