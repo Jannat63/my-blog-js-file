@@ -28,7 +28,7 @@ export async function getSheetData() {
     date: row[6],
     status: row[7] || "draft", // fallback safety
     metaTitle: row[8],
-metaDescription: row[9],
+    metaDescription: row[9],
   }));
 
   // 🔐 Only published posts are public
@@ -50,28 +50,33 @@ export async function getPostBySlug(slug: string) {
   );
 }
 
+/* -----------------------------
+   TV CHANNELS (Watch TV Page)
+-------------------------------- */
 
 export async function getTVChannels() {
 
-const range = "TV_CHANNELS!A:F";
+  const sheets = google.sheets({ version: "v4", auth });
 
-const res = await sheets.spreadsheets.values.get({
-spreadsheetId: process.env.GOOGLE_SHEET_ID,
-range,
-});
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId: process.env.GOOGLE_SHEET_ID,
+    range: "TV_CHANNELS!A2:F1000",
+  });
 
-const rows = res.data.values || [];
+  const rows = res.data.values || [];
 
-const headers = rows[0];
+  const channels = rows.map((row: any[]) => ({
+    id: row[0],
+    category: row[1],
+    name: row[2],
+    youtube_url: row[3],
+    thumbnail: row[4],
+    status: row[5],
+  }));
 
-const data = rows.slice(1).map((row:any)=>{
-const obj:any = {};
-headers.forEach((header:any,i:number)=>{
-obj[header] = row[i];
-});
-return obj;
-});
-
-return data.filter((c:any)=>c.status==="active");
-
+  return channels.filter(
+    (c) =>
+      c.status &&
+      c.status.toString().trim().toLowerCase() === "active"
+  );
 }
