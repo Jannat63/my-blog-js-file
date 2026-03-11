@@ -16,8 +16,13 @@ function ParticleBackground() {
     const c = canvas;
     const context = ctx;
 
-    c.width = window.innerWidth;
-    c.height = window.innerHeight;
+    const resize = () => {
+      c.width = window.innerWidth;
+      c.height = window.innerHeight;
+    };
+
+    resize();
+    window.addEventListener("resize", resize);
 
     const mouse = { x: 0, y: 0 };
 
@@ -132,19 +137,12 @@ function ParticleBackground() {
 
     animate();
 
-    const resize = () => {
-      c.width = window.innerWidth;
-      c.height = window.innerHeight;
-    };
-
-    window.addEventListener("resize", resize);
-
     return () => {
       window.removeEventListener("resize", resize);
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="fixed inset-0 -z-10" />;
+  return <canvas ref={canvasRef} className="fixed inset-0 z-0" />;
 }
 
 export default function LoginPage() {
@@ -183,11 +181,11 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="relative min-h-screen flex items-center justify-center bg-gray-100 p-6">
+    <main className="relative min-h-screen flex items-center justify-center p-6">
 
       <ParticleBackground />
 
-      <div className="w-full max-w-5xl bg-white/85 backdrop-blur-md rounded-2xl shadow-xl overflow-hidden grid md:grid-cols-2">
+      <div className="relative z-10 w-full max-w-5xl bg-white/85 backdrop-blur-md rounded-2xl shadow-xl overflow-hidden grid md:grid-cols-2">
 
         <div className="relative hidden md:block">
 
