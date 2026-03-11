@@ -49,3 +49,29 @@ export async function getPostBySlug(slug: string) {
         slug.toString().trim().toLowerCase()
   );
 }
+
+
+export async function getTVChannels() {
+
+const range = "TV_CHANNELS!A:F";
+
+const res = await sheets.spreadsheets.values.get({
+spreadsheetId: process.env.GOOGLE_SHEET_ID,
+range,
+});
+
+const rows = res.data.values || [];
+
+const headers = rows[0];
+
+const data = rows.slice(1).map((row:any)=>{
+const obj:any = {};
+headers.forEach((header:any,i:number)=>{
+obj[header] = row[i];
+});
+return obj;
+});
+
+return data.filter((c:any)=>c.status==="active");
+
+}

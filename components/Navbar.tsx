@@ -127,6 +127,10 @@ export default function Navbar() {
             About
           </Link>
 
+          <Link href="/watch-tv">
+          Watch TV
+          </Link>
+
           <div className="flex gap-3 pt-2">
 
             <button
