@@ -1,7 +1,7 @@
 import BlogCard from "@/components/BlogCard";
 import Link from "next/link";
 
-export default function PostGrid({ posts }: any) {
+export default function PostGrid({ posts, showHeader = true }: any) {
 
   if (!posts.length) return null;
 
@@ -11,20 +11,22 @@ export default function PostGrid({ posts }: any) {
       className="max-w-[1100px] mx-auto px-6 pb-24"
     >
 
-      <div className="flex items-center justify-between mb-10">
+      {showHeader && (
+        <div className="flex items-center justify-between mb-10">
 
-        <h2 className="text-2xl font-semibold">
-          📰 Latest Articles
-        </h2>
+          <h2 className="text-2xl font-semibold">
+            📰 Latest Articles
+          </h2>
 
-        <Link
-          href="/articles"
-          className="text-sm font-medium text-gray-600 hover:text-black transition"
-        >
-          View All →
-        </Link>
+          <Link
+            href="/articles"
+            className="text-sm font-medium text-gray-600 hover:text-black transition"
+          >
+            View All →
+          </Link>
 
-      </div>
+        </div>
+      )}
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
 

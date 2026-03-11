@@ -38,7 +38,7 @@ export default async function ArticlesPage() {
       </section>
 
       {/* POSTS GRID */}
-      <PostGrid posts={sortedPosts} />
+      <PostGrid posts={sortedPosts} showHeader={false} />
 
     </main>
   );
