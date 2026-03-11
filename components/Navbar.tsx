@@ -72,6 +72,13 @@ export default function Navbar() {
           </Link>
 
           <Link
+            href="/watch-tv"
+            className="px-4 py-2 rounded-lg text-gray-600 hover:text-black hover:bg-gray-100 hover:underline transition"
+          >
+            📺 Watch TV
+          </Link>
+
+          <Link
             href="/about"
             className="px-4 py-2 rounded-lg text-gray-600 hover:text-black hover:bg-gray-100 hover:underline transition"
           >
@@ -123,12 +130,12 @@ export default function Navbar() {
             Articles
           </Link>
 
-          <Link href="/about" className="block text-gray-700">
-            About
+          <Link href="/watch-tv" className="block text-gray-700">
+            📺 Watch TV
           </Link>
 
-          <Link href="/watch-tv">
-          Watch TV
+          <Link href="/about" className="block text-gray-700">
+            About
           </Link>
 
           <div className="flex gap-3 pt-2">
