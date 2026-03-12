@@ -5,7 +5,6 @@ export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Watch Live TV Online | Stream Live TV Channels Free",
-
   description:
     "Watch live TV online and stream television channels instantly. Enjoy live news, sports, and entertainment broadcasts from anywhere on your phone, laptop, tablet, or smart TV.",
 
@@ -148,6 +147,45 @@ export default async function Page() {
           "name": channel.name,
           "url": `https://ahsansblog.netlify.app/watch-tv#${channel.name.replace(/\s+/g, "-")}`
         }))
+      },
+
+      {
+        "@type": "FAQPage",
+        "@id": "https://ahsansblog.netlify.app/watch-tv#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How can I watch live TV online?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "You can watch live TV online using streaming platforms that provide embedded video players for television channels."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I watch TV online for free?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Many broadcasters provide free live streams that can be watched online without subscription."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is live TV streaming legal?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Live TV streaming is legal when the broadcast is provided by official or authorized sources."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What internet speed is needed for live TV streaming?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "A stable internet connection is required for smooth live television streaming."
+            }
+          }
+        ]
       }
 
     ]
@@ -156,14 +194,12 @@ export default async function Page() {
   return (
     <>
 
-      {/* Hidden SEO Content for Search Engines */}
+      {/* Hidden SEO Content */}
 
       <section className="sr-only">
 
         <h1>Watch Live TV Online</h1>
-
         <h2>Stream Live Television Channels</h2>
-
         <h3>Live News, Sports and Entertainment Streaming</h3>
 
         <p>
@@ -175,7 +211,7 @@ export default async function Page() {
 
       </section>
 
-      {/* TV Player Interface */}
+      {/* TV Player */}
 
       <WatchTV channels={channels} />
 

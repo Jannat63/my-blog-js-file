@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export default function WatchTV({ channels }: any) {
 
@@ -14,121 +14,221 @@ export default function WatchTV({ channels }: any) {
   }
 
   const [active, setActive] = useState(channels[0]);
+  const [focusIndex, setFocusIndex] = useState(0);
 
-  const getEmbed = (url: string) => {
+  const playerRef = useRef<HTMLDivElement>(null);
 
-    let id = "";
+  /* ---------- VIDEO ID ---------- */
 
-    if (url.includes("watch?v=")) id = url.split("watch?v=")[1].split("&")[0];
-    else if (url.includes("youtu.be/")) id = url.split("youtu.be/")[1].split("?")[0];
-    else if (url.includes("/live/")) id = url.split("/live/")[1].split("?")[0];
-    else if (url.includes("/embed/")) id = url.split("/embed/")[1].split("?")[0];
+  const getVideoId = (url?: string) => {
 
-    return `https://www.youtube.com/embed/${id}?autoplay=1&mute=1`;
+    if (!url) return "";
+
+    if (url.includes("watch?v=")) return url.split("watch?v=")[1].split("&")[0];
+    if (url.includes("youtu.be/")) return url.split("youtu.be/")[1].split("?")[0];
+    if (url.includes("/live/")) return url.split("/live/")[1].split("?")[0];
+    if (url.includes("/embed/")) return url.split("/embed/")[1].split("?")[0];
+
+    return "";
   };
 
+  /* ---------- EMBED ---------- */
+
+  const getEmbed = (url?: string) => {
+
+    const id = getVideoId(url);
+
+    return `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&rel=0`;
+  };
+
+  /* ---------- THUMBNAIL ---------- */
+
+  const getThumbnail = (url?: string) => {
+
+    const id = getVideoId(url);
+
+    return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+  };
+
+  /* ---------- KEYBOARD CONTROLS ---------- */
+
+  useEffect(() => {
+
+    const handleKey = (e: KeyboardEvent) => {
+
+      const total = channels.length;
+
+      if (e.key === "ArrowRight") {
+        setFocusIndex((prev) => (prev + 1) % total);
+      }
+
+      if (e.key === "ArrowLeft") {
+        setFocusIndex((prev) => (prev - 1 + total) % total);
+      }
+
+      if (e.key === "ArrowDown") {
+        setFocusIndex((prev) => (prev + 5) % total);
+      }
+
+      if (e.key === "ArrowUp") {
+        setFocusIndex((prev) => (prev - 5 + total) % total);
+      }
+
+      if (e.key === "Enter") {
+        setActive(channels[focusIndex]);
+      }
+
+      if (e.key.toLowerCase() === "f" && playerRef.current) {
+
+        if (!document.fullscreenElement) {
+          playerRef.current.requestFullscreen();
+        } else {
+          document.exitFullscreen();
+        }
+
+      }
+
+    };
+
+    window.addEventListener("keydown", handleKey);
+
+    return () => window.removeEventListener("keydown", handleKey);
+
+  }, [channels, focusIndex]);
+
   return (
-    <main className="max-w-[1250px] mx-auto px-6 pt-24 pb-24">
 
-      <h1 className="text-4xl font-bold mb-10 flex items-center gap-3">
-        📺 Watch Live TV Online
-      </h1>
+    <main className="max-w-[1100px] mx-auto px-6 pt-24 pb-24">
 
-      <div className="grid lg:grid-cols-[2.3fr_1fr] gap-8">
+      {/* HEADER */}
 
-        {/* PLAYER */}
+      <div className="text-center mb-10">
 
-        <div className="bg-black rounded-xl overflow-hidden shadow-xl">
+        <h1 className="text-4xl font-bold flex items-center justify-center gap-3">
+          📺 WATCH LIVE TV
+        </h1>
 
-          <div className="aspect-video">
+        <p className="text-gray-500 mt-3">
+          Stream international news and documentary channels live.
+        </p>
 
-            <iframe
-              src={getEmbed(active.youtube_url)}
-              title={active.name}
-              allowFullScreen
-              loading="lazy"
-              className="w-full h-full"
-            />
+      </div>
 
-          </div>
+      {/* PLAYER */}
 
-          <div className="flex items-center justify-between px-5 py-3 bg-black text-white">
+      <div
+        ref={playerRef}
+        className="bg-black rounded-xl overflow-hidden shadow-xl"
+      >
 
-            <div className="font-semibold">
-              {active.name}
-            </div>
+        <div className="aspect-video">
 
-            <div className="text-red-500 text-sm font-semibold">
-              ● LIVE
-            </div>
-
-          </div>
-
-        </div>
-
-        {/* CHANNEL LIST */}
-
-        <div className="border rounded-xl overflow-hidden bg-white shadow-sm">
-
-          <div className="px-4 py-3 border-b font-semibold bg-gray-50">
-            Channels
-          </div>
-
-          <div className="max-h-[520px] overflow-y-auto">
-
-            {channels.map((channel: any, i: number) => (
-
-              <button
-                key={channel.id}
-                aria-label={`Watch ${channel.name}`}
-                onClick={() => setActive(channel)}
-                className={`w-full flex items-center gap-3 px-4 py-4 border-b transition
-                ${active.id === channel.id
-                  ? "bg-black text-white"
-                  : "hover:bg-gray-100"}`}
-              >
-
-                <div className="text-xs opacity-60 w-6">
-                  {String(i + 1).padStart(2, "0")}
-                </div>
-
-                <div id={channel.name.replace(/\s+/g, "-")}>
-
-                  <div className="font-medium">
-                    {channel.name}
-                  </div>
-
-                  <div className="text-xs opacity-70">
-                    {channel.category}
-                  </div>
-
-                </div>
-
-              </button>
-
-            ))}
-
-          </div>
+          <iframe
+            key={active.id}
+            src={getEmbed(active.youtube_url)}
+            title={active.name}
+            allowFullScreen
+            loading="lazy"
+            className="w-full h-full"
+          />
 
         </div>
 
       </div>
 
+      {/* NOW PLAYING */}
 
-{/* ================= SEO SECTION ================= */}
+      <div className="text-center text-sm text-gray-700 mt-4 mb-12 flex items-center justify-center gap-3">
 
-<section className="mt-16 max-w-[900px] mx-auto">
+        <span className="text-gray-500">
+          NOW PLAYING
+        </span>
 
-  <details className="group border rounded-xl bg-white shadow-sm overflow-hidden">
+        <span className="font-semibold">
+          {active.name}
+        </span>
 
-    <summary className="cursor-pointer px-6 py-5 text-lg font-semibold flex justify-between items-center">
-      Additional Information
-      <span className="transition group-open:rotate-180">⌄</span>
-    </summary>
+        <span className="flex items-center gap-1 text-red-600 font-semibold">
 
-    <div className="px-6 pb-8 text-gray-700 leading-relaxed space-y-6">
+          <span className="relative flex h-3 w-3">
 
-      <h2 className="text-2xl font-semibold">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-red-600"></span>
+
+          </span>
+
+          LIVE
+
+        </span>
+
+        <span className="text-gray-400">
+          [{active.category}]
+        </span>
+
+      </div>
+
+      {/* CHANNEL GRID */}
+
+      <h2 className="text-xl font-semibold mb-6">
+        Browse Live Channels
+      </h2>
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
+
+        {channels.map((channel: any, index: number) => (
+
+          <button
+            key={channel.id}
+            onClick={() => {
+              setActive(channel);
+              setFocusIndex(index);
+            }}
+            className={`p-5 rounded-xl border bg-white shadow-sm transition-all duration-200
+            hover:shadow-md hover:-translate-y-1
+            ${active.id === channel.id ? "border-black ring-2 ring-black" : "border-gray-200"}
+            ${focusIndex === index ? "ring-2 ring-red-500" : ""}`}
+          >
+
+            <div className="flex flex-col items-center gap-3">
+
+              <img
+                src={getThumbnail(channel.youtube_url)}
+                alt={channel.name}
+                className="w-12 h-12 object-contain"
+                onError={(e:any)=> e.currentTarget.src="/tv-placeholder.png"}
+              />
+
+              <div className="text-sm font-semibold text-center">
+                {channel.name}
+              </div>
+
+              <div className="text-xs text-gray-500">
+                [{channel.category}]
+              </div>
+
+            </div>
+
+          </button>
+
+        ))}
+
+      </div>
+
+      {/* SEO SECTION */}
+
+      <section className="mt-16 max-w-[900px] mx-auto">
+
+        <details className="group border rounded-xl bg-white shadow-sm overflow-hidden">
+
+          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold flex justify-between items-center">
+            Additional Information
+            <span className="transition group-open:rotate-180">⌄</span>
+          </summary>
+
+          <div className="px-6 pb-8 text-gray-700 leading-relaxed space-y-6">
+
+            <h2 className="text-2xl font-semibold">
         Watch Live TV Online
       </h2>
 
@@ -261,40 +361,6 @@ from a web browser without installing additional applications.
 </details>
 </section>
 
-
-{/* FAQ STRUCTURED DATA */}
-
-<script
-type="application/ld+json"
-dangerouslySetInnerHTML={{
-__html: JSON.stringify({
-"@context":"https://schema.org",
-"@type":"FAQPage",
-"mainEntity":[
-{
-"@type":"Question",
-"name":"How can I watch live TV online?",
-"acceptedAnswer":{"@type":"Answer","text":"You can watch live TV online using streaming platforms that provide embedded video players for television channels."}
-},
-{
-"@type":"Question",
-"name":"Can I watch TV online for free?",
-"acceptedAnswer":{"@type":"Answer","text":"Many broadcasters provide free live streams that can be watched online without subscription."}
-},
-{
-"@type":"Question",
-"name":"Is live TV streaming legal?",
-"acceptedAnswer":{"@type":"Answer","text":"Live TV streaming is legal when the broadcast is provided by official or authorized sources."}
-},
-{
-"@type":"Question",
-"name":"What internet speed is needed for live TV streaming?",
-"acceptedAnswer":{"@type":"Answer","text":"A stable internet connection is required for smooth live television streaming."}
-}
-]
-})
-}}
-/>
 
     </main>
   );
