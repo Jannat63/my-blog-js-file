@@ -6,6 +6,7 @@ import FeaturedPosts from "@/components/FeaturedPosts";
 import PostGrid from "@/components/PostGrid";
 import Hero from "@/components/Hero";
 import TrendingPosts from "@/components/TrendingPosts";
+import HomeSEOSection from "@/components/HomeSEOSection";
 
 export const metadata = {
   title: "Ahsan's Blog | Technology, AI & Global Trends",
@@ -30,6 +31,24 @@ export default async function Home() {
 
   return (
     <main>
+
+      <Script
+id="organization-schema"
+type="application/ld+json"
+dangerouslySetInnerHTML={{
+__html: JSON.stringify({
+"@context": "https://schema.org",
+"@type": "Organization",
+name: "Ahsan's Blog",
+url: "https://ahsansblog.netlify.app",
+logo: "https://ahsansblog.netlify.app/logo.png",
+founder: {
+"@type": "Person",
+name: "Ahsan Jannat"
+}
+})
+}}
+/>
 
       {/* Website Schema */}
       <Script
@@ -125,6 +144,8 @@ export default async function Home() {
       <TrendingPosts posts={sortedPosts} />
 
       <PostGrid posts={sortedPosts.slice(8)} />
+
+<HomeSEOSection posts={sortedPosts} />
 
     </main>
   );

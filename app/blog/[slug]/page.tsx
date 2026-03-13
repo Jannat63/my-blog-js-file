@@ -9,6 +9,31 @@ import Comments from "@/components/Comments";
 
 const siteUrl = "https://ahsansblog.netlify.app";
 
+/* -----------------------------
+   FAQ AUTO EXTRACTION
+--------------------------------*/
+
+function extractFAQs(html: string) {
+  const faqs: { question: string; answer: string }[] = [];
+
+  const regex = /<h3>(.*?)<\/h3>\s*<p>(.*?)<\/p>/g;
+
+  let match;
+
+  while ((match = regex.exec(html)) !== null) {
+    faqs.push({
+      question: match[1],
+      answer: match[2],
+    });
+  }
+
+  return faqs;
+}
+
+/* -----------------------------
+   METADATA
+--------------------------------*/
+
 export async function generateMetadata({
   params,
 }: {
@@ -46,6 +71,10 @@ export async function generateMetadata({
   };
 }
 
+/* -----------------------------
+   PAGE
+--------------------------------*/
+
 export default async function BlogPost({
   params,
 }: {
@@ -66,34 +95,116 @@ export default async function BlogPost({
 
   const url = `${siteUrl}/blog/${slug}`;
 
+  const faqs = extractFAQs(post.content);
+
+  /* -----------------------------
+     STRUCTURED DATA
+  --------------------------------*/
+
+  const articleSchema = {
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.metaDescription || post.excerpt,
+    image: post.image,
+
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": url,
+    },
+
+    datePublished: post.date,
+    dateModified: post.date,
+
+    author: {
+      "@type": "Person",
+      name: "Ahsan Jannat",
+      url: `${siteUrl}/about`,
+    },
+
+    publisher: {
+      "@type": "Organization",
+      name: "Ahsan's Blog",
+      logo: {
+        "@type": "ImageObject",
+        url: `${siteUrl}/logo.png`,
+      },
+    },
+
+    wordCount: post.content.split(" ").length,
+  };
+
+  const breadcrumbSchema = {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: siteUrl,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: post.title,
+        item: url,
+      },
+    ],
+  };
+
+  const authorSchema = {
+    "@type": "Person",
+    name: "Ahsan Jannat",
+    url: `${siteUrl}/about`,
+    jobTitle: "Technology Blogger",
+  };
+
+  const organizationSchema = {
+    "@type": "Organization",
+    name: "Ahsan's Blog",
+    url: siteUrl,
+    logo: `${siteUrl}/logo.png`,
+    founder: {
+      "@type": "Person",
+      name: "Ahsan Jannat",
+    },
+  };
+
+  const faqSchema =
+    faqs.length > 0
+      ? {
+          "@type": "FAQPage",
+          mainEntity: faqs.map((faq) => ({
+            "@type": "Question",
+            name: faq.question,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: faq.answer,
+            },
+          })),
+        }
+      : null;
+
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      articleSchema,
+      breadcrumbSchema,
+      authorSchema,
+      organizationSchema,
+      ...(faqSchema ? [faqSchema] : []),
+    ],
+  };
+
   return (
     <>
       <ReadingProgress />
 
-      {/* Article Schema */}
+      {/* Structured Data */}
       <Script
-        id="article-schema"
+        id="structured-data"
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "BlogPosting",
-            headline: post.title,
-            description: post.metaDescription || post.excerpt,
-            image: post.image,
-            author: {
-              "@type": "Person",
-              name: "Ahsan Jannat",
-              url: `${siteUrl}/about`,
-            },
-            publisher: {
-              "@type": "Organization",
-              name: "Ahsan's Blog",
-              url: siteUrl,
-            },
-            datePublished: post.date,
-            mainEntityOfPage: url,
-          }),
+          __html: JSON.stringify(structuredData),
         }}
       />
 
@@ -112,7 +223,9 @@ export default async function BlogPost({
             <div className="mb-10 rounded-xl overflow-hidden">
               <img
                 src={post.image}
-                alt={post.title}
+                alt={`${post.title} featured image`}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-[300px] md:h-[480px] object-cover"
               />
             </div>
@@ -225,6 +338,8 @@ export default async function BlogPost({
                         <img
                           src={related.image}
                           alt={related.title}
+                          loading="lazy"
+                          decoding="async"
                           className="w-full h-40 object-cover"
                         />
                       )}
