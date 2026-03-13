@@ -6,6 +6,8 @@ import ReadingProgress from "@/components/ReadingProgress";
 import { calculateReadingTime } from "@/lib/readingTime";
 import Script from "next/script";
 import Comments from "@/components/Comments";
+import type { Metadata } from "next";
+
 
 const siteUrl = "https://ahsansblog.netlify.app";
 
@@ -34,19 +36,24 @@ function extractFAQs(html: string) {
    METADATA
 --------------------------------*/
 
+
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>;
-}) {
+}): Promise<Metadata> {
+
   const { slug } = await params;
   const post = await getPostBySlug(slug);
 
   if (!post) return {};
 
   const url = `${siteUrl}/blog/${slug}`;
+  const image = post.image;
 
   return {
+    metadataBase: new URL(siteUrl),
+
     title: post.metaTitle || post.title,
     description: post.metaDescription || post.excerpt,
 
@@ -58,18 +65,38 @@ export async function generateMetadata({
       title: post.metaTitle || post.title,
       description: post.metaDescription || post.excerpt,
       url: url,
+      siteName: "Ahsan's Blog",
       type: "article",
-      images: post.image ? [post.image] : [],
+      images: image
+        ? [
+            {
+              url: image,
+              width: 1200,
+              height: 630,
+              alt: post.title,
+            },
+          ]
+        : [],
     },
 
     twitter: {
       card: "summary_large_image",
       title: post.metaTitle || post.title,
       description: post.metaDescription || post.excerpt,
-      images: post.image ? [post.image] : [],
+      images: image
+        ? [
+            {
+              url: image,
+              width: 1200,
+              height: 630,
+              alt: post.title,
+            },
+          ]
+        : [],
     },
   };
 }
+
 
 /* -----------------------------
    PAGE
