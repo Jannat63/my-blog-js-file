@@ -1,4 +1,5 @@
 import { calculateReadingTime } from "@/lib/readingTime";
+import { getStoriesFromSheet } from "@/lib/googleStories";
 
 export const dynamic = "force-dynamic";
 
@@ -6,20 +7,11 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
-async function getStories() {
-
-  const res = await fetch("/api/get-stories", {
-    cache: "no-store",
-  });
-
-  return res.json();
-}
-
 export default async function StoryPage({ params }: Props) {
 
   const { slug } = await params;
 
-  const stories = await getStories();
+  const stories = await getStoriesFromSheet();
 
   const story = stories.find(
     (s: any) =>
@@ -40,17 +32,11 @@ export default async function StoryPage({ params }: Props) {
 
       <article className="prose prose-lg max-w-none">
 
-        {/* TITLE */}
-
         <h1>{story.title}</h1>
-
-        {/* META */}
 
         <p className="text-gray-500 text-sm">
           {calculateReadingTime(story.content)} • {story.date}
         </p>
-
-        {/* COVER IMAGE */}
 
         {story.image && (
           <div className="my-6">
@@ -62,11 +48,7 @@ export default async function StoryPage({ params }: Props) {
           </div>
         )}
 
-        {/* STORY CONTENT */}
-
-        <div
-          dangerouslySetInnerHTML={{ __html: story.content }}
-        />
+        <div dangerouslySetInnerHTML={{ __html: story.content }} />
 
       </article>
 
