@@ -1,6 +1,9 @@
 import { calculateReadingTime } from "@/lib/readingTime";
 import { getStoriesFromSheet } from "@/lib/googleStories";
 
+import TableOfContents from "@/components/TableOfContents";
+import StorySEOContent from "@/components/StorySEOContent";
+
 export const dynamic = "force-dynamic";
 
 type Props = {
@@ -27,8 +30,30 @@ export default async function StoryPage({ params }: Props) {
     );
   }
 
+  // SEO Schema
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: story.title,
+    datePublished: story.date,
+    author: {
+      "@type": "Person",
+      name: "Ahsan Jannat",
+    },
+    image: story.image,
+    articleBody: story.content.replace(/<[^>]+>/g, ""),
+  };
+
   return (
     <main className="max-w-[800px] mx-auto px-6 pt-24 pb-24">
+
+      {/* SEO Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(schema),
+        }}
+      />
 
       <article className="prose prose-lg max-w-none">
 
@@ -48,7 +73,14 @@ export default async function StoryPage({ params }: Props) {
           </div>
         )}
 
+        {/* Table of Contents */}
+        <TableOfContents content={story.content} />
+
+        {/* Story Content */}
         <div dangerouslySetInnerHTML={{ __html: story.content }} />
+
+        {/* Expandable SEO Content */}
+        <StorySEOContent />
 
       </article>
 

@@ -177,6 +177,7 @@ export default async function Home() {
 {sortedStories[0].image && (
 <img
 src={sortedStories[0].image}
+alt={sortedStories[0].title}
 className="w-full h-[360px] object-cover"
 />
 )}
@@ -227,7 +228,7 @@ Read Story →
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
 
-          {sortedStories.slice(0, 3).map((story: any) => (
+          {sortedStories.slice(1, 4).map((story: any) => (
             <BlogCard
               key={story.slug}
               title={story.title}

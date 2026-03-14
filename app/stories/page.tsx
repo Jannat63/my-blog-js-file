@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import BlogCard from "@/components/BlogCard";
+import StoriesInfinite from "@/components/StoriesInfinite";
 
 async function getStories() {
   const base =
@@ -29,13 +30,32 @@ export default async function StoriesPage() {
       new Date(b.date).getTime() - new Date(a.date).getTime()
   );
 
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: "Ahsan Jannat Stories",
+    description:
+      "Personal stories, reflections, and experiences written by Ahsan Jannat.",
+    author: {
+      "@type": "Person",
+      name: "Ahsan Jannat",
+    },
+  };
+
   return (
     <main className="max-w-[1100px] mx-auto px-6 pt-24 pb-24">
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(schema),
+        }}
+      />
 
       {/* Page Title */}
       <div className="mb-12">
         <h1 className="text-4xl font-bold mb-3">
-          ✍️ Stories
+          ✍️ Personal Stories & Experiences
         </h1>
 
         <p className="text-gray-600 max-w-xl">
@@ -43,25 +63,16 @@ export default async function StoriesPage() {
         </p>
       </div>
 
-      {/* Stories Grid */}
+      <h2 className="text-2xl font-semibold mb-6">
+        Latest Stories
+      </h2>
+
       {sortedStories.length === 0 ? (
         <p className="text-gray-500">
           No stories published yet.
         </p>
       ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-          {sortedStories.map((story: any) => (
-            <BlogCard
-              key={story.slug}
-              title={story.title}
-              excerpt={story.excerpt}
-              image={story.image}
-              slug={`stories/${story.slug}`}
-            />
-          ))}
-
-        </div>
+        <StoriesInfinite stories={sortedStories} />
       )}
 
     </main>
