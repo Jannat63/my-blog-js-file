@@ -2,13 +2,14 @@ import { google } from "googleapis";
 
 /* Generate SEO slug */
 function createSlug(text: string) {
-  return text
+  const slug = text
     .toLowerCase()
-    .normalize("NFKD")
-    .replace(/[^\w\s-]/g, "")
     .trim()
     .replace(/\s+/g, "-")
+    .replace(/[^\p{L}\p{N}-]+/gu, "")
     .replace(/-+/g, "-");
+
+  return slug;
 }
 
 export async function getStoriesFromSheet() {
