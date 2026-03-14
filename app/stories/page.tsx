@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import BlogCard from "@/components/BlogCard";
 import StoriesInfinite from "@/components/StoriesInfinite";
+import StorySEOContent from "@/components/StorySEOContent";
 
 async function getStories() {
   const base =
@@ -74,6 +75,9 @@ export default async function StoriesPage() {
       ) : (
         <StoriesInfinite stories={sortedStories} />
       )}
+
+      {/* SEO Content Section */}
+      <StorySEOContent />
 
     </main>
   );

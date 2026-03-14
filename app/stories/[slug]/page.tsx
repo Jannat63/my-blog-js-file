@@ -3,16 +3,17 @@ import { getStoriesFromSheet } from "@/lib/googleStories";
 
 import TableOfContents from "@/components/TableOfContents";
 import StorySEOContent from "@/components/StorySEOContent";
+import BlogCard from "@/components/BlogCard";
 
 export const dynamic = "force-dynamic";
 
 type Props = {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 };
 
 export default async function StoryPage({ params }: Props) {
 
-  const { slug } = await params;
+  const { slug } = params;
 
   const stories = await getStoriesFromSheet();
 
@@ -30,6 +31,15 @@ export default async function StoryPage({ params }: Props) {
     );
   }
 
+  // Related stories (exclude current one)
+  const relatedStories = stories
+    .filter(
+      (s: any) =>
+        s.status === "published" &&
+        String(s.slug).toLowerCase() !== String(slug).toLowerCase()
+    )
+    .slice(0, 3);
+
   // SEO Schema
   const schema = {
     "@context": "https://schema.org",
@@ -45,7 +55,7 @@ export default async function StoryPage({ params }: Props) {
   };
 
   return (
-    <main className="max-w-[800px] mx-auto px-6 pt-24 pb-24">
+    <main className="max-w-[1100px] mx-auto px-6 pt-24 pb-24">
 
       {/* SEO Schema */}
       <script
@@ -55,34 +65,66 @@ export default async function StoryPage({ params }: Props) {
         }}
       />
 
-      <article className="prose prose-lg max-w-none">
+      <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-10">
 
-        <h1>{story.title}</h1>
-
-        <p className="text-gray-500 text-sm">
-          {calculateReadingTime(story.content)} • {story.date}
-        </p>
-
-        {story.image && (
-          <div className="my-6">
-            <img
-              src={story.image}
-              alt={story.title}
-              className="w-full max-h-[420px] object-cover rounded-2xl shadow-sm"
-            />
-          </div>
-        )}
-
-        {/* Table of Contents */}
-        <TableOfContents content={story.content} />
+        {/* Sticky Table of Contents */}
+        <div className="hidden lg:block sticky top-28 h-fit">
+          <TableOfContents content={story.content} />
+        </div>
 
         {/* Story Content */}
-        <div dangerouslySetInnerHTML={{ __html: story.content }} />
+        <article className="prose prose-lg max-w-none">
 
-        {/* Expandable SEO Content */}
-        <StorySEOContent />
+          <h1>{story.title}</h1>
 
-      </article>
+          <p className="text-gray-500 text-sm">
+            {calculateReadingTime(story.content)} • {story.date}
+          </p>
+
+          {story.image && (
+            <div className="my-6">
+              <img
+                src={story.image}
+                alt={`${story.title} story image`}
+                className="w-full max-h-[420px] object-cover rounded-2xl shadow-sm"
+              />
+            </div>
+          )}
+
+          {/* Story Body */}
+          <div dangerouslySetInnerHTML={{ __html: story.content }} />
+
+          {/* SEO Expandable Section */}
+          <StorySEOContent />
+
+        </article>
+
+      </div>
+
+      {/* Read More Stories */}
+      {relatedStories.length > 0 && (
+        <section className="mt-24">
+
+          <h2 className="text-2xl font-semibold mb-8">
+            📚 Read More Stories
+          </h2>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            {relatedStories.map((s: any) => (
+              <BlogCard
+                key={s.slug}
+                title={s.title}
+                excerpt={s.excerpt}
+                image={s.image}
+                slug={`stories/${s.slug}`}
+              />
+            ))}
+
+          </div>
+
+        </section>
+      )}
 
     </main>
   );
