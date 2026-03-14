@@ -17,9 +17,10 @@ export default async function StoryPage({ params }: Props) {
 
   const stories = await getStoriesFromSheet();
 
+  /* Find story by slug */
   const story = stories.find(
     (s: any) =>
-      String(s.slug).toLowerCase() === String(slug).toLowerCase() &&
+      s.slug === slug &&
       String(s.status).toLowerCase() === "published"
   );
 
@@ -31,16 +32,16 @@ export default async function StoryPage({ params }: Props) {
     );
   }
 
-  // Related stories (exclude current one)
+  /* Related stories */
   const relatedStories = stories
     .filter(
       (s: any) =>
-        s.status === "published" &&
-        String(s.slug).toLowerCase() !== String(slug).toLowerCase()
+        s.slug !== slug &&
+        String(s.status).toLowerCase() === "published"
     )
     .slice(0, 3);
 
-  // SEO Schema
+  /* SEO Schema */
   const schema = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -117,7 +118,7 @@ export default async function StoryPage({ params }: Props) {
                 title={s.title}
                 excerpt={s.excerpt}
                 image={s.image}
-                slug={`stories/${s.slug}`}
+                slug={s.slug}
               />
             ))}
 

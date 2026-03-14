@@ -1,5 +1,16 @@
 import { google } from "googleapis";
 
+/* Generate SEO slug */
+function createSlug(text: string) {
+  return text
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[^\w\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+}
+
 export async function getStoriesFromSheet() {
 
   const auth = new google.auth.GoogleAuth({
@@ -19,14 +30,26 @@ export async function getStoriesFromSheet() {
 
   const rows = response.data.values || [];
 
-  return rows.map((row) => ({
-    id: row[0],
-    title: row[1],
-    slug: row[2],
-    excerpt: row[3],
-    content: row[4],
-    image: row[5],
-    date: row[6],
-    status: row[7],
-  }));
+  return rows.map((row) => {
+
+    const title = row[1] || "";
+    const manualSlug = row[2] || "";
+
+    const slug =
+      manualSlug && manualSlug.trim() !== ""
+        ? createSlug(manualSlug)
+        : createSlug(title);
+
+    return {
+      id: row[0],
+      title,
+      slug,
+      excerpt: row[3],
+      content: row[4],
+      image: row[5],
+      date: row[6],
+      status: row[7],
+    };
+
+  });
 }
