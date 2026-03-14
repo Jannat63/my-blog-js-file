@@ -30,7 +30,7 @@ export default function PostGrid({ posts, showHeader = true }: any) {
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
 
-        {posts.map((post: any) => (
+        {posts.slice(0, 6).map((post: any) => (
           <BlogCard
             key={post.slug}
             title={post.title}
