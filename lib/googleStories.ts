@@ -1,5 +1,4 @@
 import { google } from "googleapis";
-import { NextResponse } from "next/server";
 
 /* Generate slug */
 function createSlug(text: string) {
@@ -11,52 +10,45 @@ function createSlug(text: string) {
     .replace(/-+/g, "-");
 }
 
-export async function GET() {
-  try {
-    const auth = new google.auth.GoogleAuth({
-      credentials: {
-        client_email: process.env.GOOGLE_CLIENT_EMAIL,
-        private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-      },
-      scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"],
-    });
+export async function getStoriesFromSheet() {
 
-    const sheets = google.sheets({ version: "v4", auth });
+  const auth = new google.auth.GoogleAuth({
+    credentials: {
+      client_email: process.env.GOOGLE_CLIENT_EMAIL,
+      private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+    },
+    scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"],
+  });
 
-    const response = await sheets.spreadsheets.values.get({
-      spreadsheetId: process.env.GOOGLE_SHEET_ID,
-      range: "Stories!A2:H1000",
-    });
+  const sheets = google.sheets({ version: "v4", auth });
 
-    const rows = response.data.values || [];
+  const response = await sheets.spreadsheets.values.get({
+    spreadsheetId: process.env.GOOGLE_SHEET_ID,
+    range: "Stories!A2:H1000",
+  });
 
-    const stories = rows.map((row) => {
+  const rows = response.data.values || [];
 
-      const title = row[1] || "";
-      const manualSlug = row[2] || "";
+  return rows.map((row) => {
 
-      const slug =
-        manualSlug && manualSlug.trim() !== ""
-          ? createSlug(manualSlug)
-          : createSlug(title);
+    const title = row[1] || "";
+    const manualSlug = row[2] || "";
 
-      return {
-        id: row[0],
-        title,
-        slug,
-        excerpt: row[3],
-        content: row[4],
-        image: row[5],
-        date: row[6],
-        status: row[7],
-      };
+    const slug =
+      manualSlug && manualSlug.trim() !== ""
+        ? createSlug(manualSlug)
+        : createSlug(title);
 
-    });
+    return {
+      id: row[0],
+      title,
+      slug,
+      excerpt: row[3],
+      content: row[4],
+      image: row[5],
+      date: row[6],
+      status: row[7],
+    };
 
-    return NextResponse.json(stories);
-
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: "Failed to fetch stories" }, { status: 500 });
-  }
+  });
 }
