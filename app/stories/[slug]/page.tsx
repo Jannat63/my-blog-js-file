@@ -62,13 +62,13 @@ export default async function StoryPage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-10">
+      <div className="max-w-[1100px] mx-auto grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-12">
 
-        <div className="hidden lg:block sticky top-28 h-fit">
+        <div className="hidden lg:block sticky top-28 h-fit pr-6">
           <TableOfContents content={story.content} />
         </div>
 
-        <article className="prose prose-lg max-w-none">
+        <article className="prose prose-lg max-w-[720px] mx-auto">
 
           <h1>{story.title}</h1>
 
