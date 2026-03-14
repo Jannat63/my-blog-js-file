@@ -1,5 +1,5 @@
 import { calculateReadingTime } from "@/lib/readingTime";
-import { getStoriesFromSheet } from "@/lib/googleStories";
+import { getStories } from "@/lib/getStories";
 
 import TableOfContents from "@/components/TableOfContents";
 import StorySEOContent from "@/components/StorySEOContent";
@@ -8,20 +8,21 @@ import BlogCard from "@/components/BlogCard";
 export const dynamic = "force-dynamic";
 
 type Props = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 export default async function StoryPage({ params }: Props) {
 
-  const { slug } = params;
+  const { slug } = await params;
 
-  const stories = await getStoriesFromSheet();
+  const stories = await getStories();
 
-  /* Find story by slug */
+  const cleanSlug = slug.trim().toLowerCase();
+
   const story = stories.find(
     (s: any) =>
-      s.slug === slug &&
-      String(s.status).toLowerCase() === "published"
+      s.slug?.trim().toLowerCase() === cleanSlug &&
+      s.status?.trim().toLowerCase() === "published"
   );
 
   if (!story) {
@@ -32,16 +33,14 @@ export default async function StoryPage({ params }: Props) {
     );
   }
 
-  /* Related stories */
   const relatedStories = stories
     .filter(
       (s: any) =>
-        s.slug !== slug &&
-        String(s.status).toLowerCase() === "published"
+        s.slug?.trim().toLowerCase() !== cleanSlug &&
+        s.status?.trim().toLowerCase() === "published"
     )
     .slice(0, 3);
 
-  /* SEO Schema */
   const schema = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -58,22 +57,17 @@ export default async function StoryPage({ params }: Props) {
   return (
     <main className="max-w-[1100px] mx-auto px-6 pt-24 pb-24">
 
-      {/* SEO Schema */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(schema),
-        }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-10">
 
-        {/* Sticky Table of Contents */}
         <div className="hidden lg:block sticky top-28 h-fit">
           <TableOfContents content={story.content} />
         </div>
 
-        {/* Story Content */}
         <article className="prose prose-lg max-w-none">
 
           <h1>{story.title}</h1>
@@ -86,23 +80,20 @@ export default async function StoryPage({ params }: Props) {
             <div className="my-6">
               <img
                 src={story.image}
-                alt={`${story.title} story image`}
+                alt={story.title}
                 className="w-full max-h-[420px] object-cover rounded-2xl shadow-sm"
               />
             </div>
           )}
 
-          {/* Story Body */}
           <div dangerouslySetInnerHTML={{ __html: story.content }} />
 
-          {/* SEO Expandable Section */}
           <StorySEOContent />
 
         </article>
 
       </div>
 
-      {/* Read More Stories */}
       {relatedStories.length > 0 && (
         <section className="mt-24">
 
