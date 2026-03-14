@@ -14,7 +14,7 @@ export default function BlogCard({
   slug,
 }: BlogCardProps) {
   return (
-    <Link href={`/blog/${slug}`} className="block group h-full">
+    <Link href={`/${slug}`} className="block group h-full">
 
       <article className="bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
 
@@ -41,7 +41,7 @@ export default function BlogCard({
           </p>
 
           <span className="mt-4 text-sm font-medium text-black">
-            Read Article →
+            Read →
           </span>
 
         </div>

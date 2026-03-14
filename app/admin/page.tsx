@@ -27,6 +27,9 @@ const [uploading,setUploading] = useState(false);
 const [editingId,setEditingId] = useState<string | null>(null);
 const [editForm,setEditForm] = useState<any>({});
 
+const [stories,setStories] = useState<any[]>([]);
+
+
 useEffect(()=>{
 
 const isAdmin = sessionStorage.getItem("admin");
@@ -48,6 +51,15 @@ setPosts(data.reverse());
 
 };
 
+const fetchStories = async()=>{
+
+const res = await fetch("/api/get-stories");
+const data = await res.json();
+
+setStories(data.reverse());
+
+};
+
 const fetchComments = async()=>{
 
 const res = await fetch("/api/admin-comments");
@@ -61,6 +73,7 @@ useEffect(()=>{
 
 if(authorized){
 fetchPosts();
+fetchStories();
 fetchComments();
 }
 
@@ -134,6 +147,30 @@ alert(data.error);
 
 };
 
+
+const handleDeleteStory = async(id:string)=>{
+
+if(!confirm("Delete this story?")) return;
+
+const res = await fetch("/api/delete-story",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+id,
+secret:process.env.NEXT_PUBLIC_ADMIN_SECRET
+})
+});
+
+const data = await res.json();
+
+if(data.success){
+fetchStories();
+}else{
+alert(data.error);
+}
+
+};
+
 const handleEdit = (post:any)=>{
 setEditingId(post.id);
 
@@ -144,6 +181,21 @@ excerpt: post.excerpt,
 content: post.content,
 image: post.image,
 status: post.status
+});
+
+};
+
+const handleEditStory = (story:any)=>{
+
+setEditingId(story.id);
+
+setEditForm({
+id: story.id,
+title: story.title,
+excerpt: story.excerpt,
+content: story.content,
+image: story.image,
+status: story.status
 });
 
 };
@@ -164,6 +216,29 @@ const data = await res.json();
 if(data.success){
 setEditingId(null);
 fetchPosts();
+}else{
+alert(data.error);
+}
+
+};
+
+
+const handleUpdateStory = async()=>{
+
+const res = await fetch("/api/update-story",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+...editForm,
+secret:process.env.NEXT_PUBLIC_ADMIN_SECRET
+})
+});
+
+const data = await res.json();
+
+if(data.success){
+setEditingId(null);
+fetchStories();
 }else{
 alert(data.error);
 }
@@ -257,6 +332,17 @@ tab==="posts"
 }`}
 >
 Posts
+</button>
+
+<button
+  onClick={()=>setTab("stories")}
+  className={`px-5 py-2 rounded-lg font-medium transition ${
+    tab==="stories"
+      ? "bg-black text-white"
+      : "bg-gray-200"
+  }`}
+>
+Stories
 </button>
 
 <button
@@ -514,6 +600,261 @@ Delete
 </div>
 
 </div>
+
+</div>
+
+)}
+
+{tab==="stories" && (
+
+<div className="grid lg:grid-cols-2 gap-10">
+
+{/* CREATE STORY */}
+
+<div className="bg-white p-8 rounded-xl shadow-sm border">
+
+<h2 className="text-xl font-semibold mb-6">
+Create New Story
+</h2>
+
+<form
+onSubmit={async(e)=>{
+
+e.preventDefault();
+
+await fetch("/api/add-story",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+...form,
+secret:process.env.NEXT_PUBLIC_ADMIN_SECRET
+})
+});
+
+setForm({
+title:"",
+excerpt:"",
+content:"",
+image:"",
+status:"published"
+});
+
+fetchStories();
+
+}}
+className="space-y-4"
+>
+
+<input
+name="title"
+value={form.title}
+onChange={handleChange}
+placeholder="Story Title"
+className="w-full border p-3 rounded-lg"
+/>
+
+<input
+name="excerpt"
+value={form.excerpt}
+onChange={handleChange}
+placeholder="Short Description"
+className="w-full border p-3 rounded-lg"
+/>
+
+<RichEditor
+content={form.content}
+onChange={(value)=>setForm({...form,content:value})}
+/>
+
+<input
+type="file"
+accept="image/*"
+className="w-full border p-3 rounded-lg"
+onChange={async (e:any)=>{
+
+const file = e.target.files[0];
+if(!file) return;
+
+setUploading(true);
+
+const reader = new FileReader();
+
+reader.onloadend = async ()=>{
+
+const res = await fetch("/api/upload-image",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+file:reader.result,
+secret:process.env.NEXT_PUBLIC_ADMIN_SECRET
+})
+});
+
+const data = await res.json();
+
+if(data.url){
+setForm({...form,image:data.url});
+}else{
+alert("Image upload failed");
+}
+
+setUploading(false);
+
+};
+
+reader.readAsDataURL(file);
+
+}}
+/>
+
+{uploading && (
+<p className="text-sm text-gray-500">
+Uploading image...
+</p>
+)}
+
+{form.image && (
+<img
+src={form.image}
+className="w-full h-48 object-cover rounded-lg"
+/>
+)}
+
+<button className="w-full bg-black text-white py-3 rounded-lg">
+Publish Story
+</button>
+
+</form>
+
+</div>
+
+
+
+{/* STORIES LIST */}
+
+<div className="bg-white p-8 rounded-xl shadow-sm border">
+
+<h2 className="text-xl font-semibold mb-6">
+All Stories
+</h2>
+
+<div className="space-y-4 max-h-[650px] overflow-y-auto pr-2">
+
+{stories.map((story:any)=>(
+
+<div key={story.id} className="border rounded-xl p-4">
+
+{editingId===story.id ? (
+
+<div className="space-y-3">
+
+<input
+value={editForm.title}
+onChange={(e)=>setEditForm({...editForm,title:e.target.value})}
+className="w-full border p-2 rounded-lg"
+/>
+
+<input
+value={editForm.excerpt}
+onChange={(e)=>setEditForm({...editForm,excerpt:e.target.value})}
+className="w-full border p-2 rounded-lg"
+/>
+
+<RichEditor
+content={editForm.content}
+onChange={(value)=>setEditForm({...editForm,content:value})}
+/>
+
+<select
+value={editForm.status}
+onChange={(e)=>setEditForm({...editForm,status:e.target.value})}
+className="w-full border p-2 rounded-lg"
+>
+
+    <input
+value={editForm.image}
+onChange={(e)=>setEditForm({...editForm,image:e.target.value})}
+className="w-full border p-2 rounded-lg"
+placeholder="Image URL"
+/>
+<option value="published">Publish</option>
+<option value="draft">Draft</option>
+</select>
+
+<div className="flex gap-3 pt-2">
+
+<button
+onClick={handleUpdateStory}
+className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm"
+>
+Save
+</button>
+
+<button
+onClick={()=>setEditingId(null)}
+className="bg-gray-400 text-white px-4 py-2 rounded-lg text-sm"
+>
+Cancel
+</button>
+
+</div>
+
+</div>
+
+) : (
+
+<div className="flex items-center justify-between">
+
+<div>
+
+<h3 className="font-semibold text-gray-800">
+{story.title}
+</h3>
+
+<span
+className={`text-xs px-2 py-1 rounded-full ${
+story.status==="published"
+? "bg-green-100 text-green-700"
+: "bg-yellow-100 text-yellow-700"
+}`}
+>
+{story.status}
+</span>
+
+</div>
+
+<div className="flex gap-4">
+
+<button
+onClick={()=>handleEditStory(story)}
+className="text-blue-600 text-sm"
+>
+Edit
+</button>
+
+<button
+onClick={()=>handleDeleteStory(story.id)}
+className="text-red-600 text-sm"
+>
+Delete
+</button>
+
+</div>
+
+</div>
+
+)}
+
+</div>
+
+))}
+
+</div>
+
+</div>
+
+
+
 
 </div>
 

@@ -67,6 +67,11 @@ export default function Navbar() {
             Articles
           </Link>
 
+          {/* NEW STORIES LINK */}
+          <Link href="/stories" className="nav-link">
+            Stories
+          </Link>
+
           <Link href="/watch-tv" className="nav-link">
             📺 Watch TV
           </Link>
@@ -122,6 +127,11 @@ export default function Navbar() {
 
           <Link href="/articles" onClick={closeMenu} className="mobile-link">
             Articles
+          </Link>
+
+          {/* NEW STORIES LINK */}
+          <Link href="/stories" onClick={closeMenu} className="mobile-link">
+            Stories
           </Link>
 
           <Link href="/watch-tv" onClick={closeMenu} className="mobile-link">
