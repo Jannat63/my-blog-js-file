@@ -6,7 +6,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { id, secret } = body;
 
-    // 🔐 AUTH
+    // AUTH
     if (secret !== process.env.ADMIN_SECRET) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -21,18 +21,39 @@ export async function POST(req: Request) {
 
     const sheets = google.sheets({ version: "v4", auth });
 
+    // Get all rows
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: process.env.GOOGLE_SHEET_ID,
       range: "Stories!A2:H1000",
     });
 
     const rows = response.data.values || [];
-    const rowIndex = rows.findIndex((row) => row[0] === id);
+
+    // Find row index safely
+    const rowIndex = rows.findIndex(
+      (row) => String(row[0]) === String(id)
+    );
 
     if (rowIndex === -1) {
       return NextResponse.json({ error: "Story not found" }, { status: 404 });
     }
 
+    // Get sheet metadata to detect sheetId
+    const spreadsheet = await sheets.spreadsheets.get({
+      spreadsheetId: process.env.GOOGLE_SHEET_ID,
+    });
+
+    const sheet = spreadsheet.data.sheets?.find(
+      (s) => s.properties?.title === "Stories"
+    );
+
+    const sheetId = sheet?.properties?.sheetId;
+
+    if (sheetId === undefined) {
+      return NextResponse.json({ error: "Sheet not found" }, { status: 500 });
+    }
+
+    // Delete row
     await sheets.spreadsheets.batchUpdate({
       spreadsheetId: process.env.GOOGLE_SHEET_ID,
       requestBody: {
@@ -40,7 +61,7 @@ export async function POST(req: Request) {
           {
             deleteDimension: {
               range: {
-                sheetId: 0,
+                sheetId,
                 dimension: "ROWS",
                 startIndex: rowIndex + 1,
                 endIndex: rowIndex + 2,
