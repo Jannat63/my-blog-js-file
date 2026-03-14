@@ -143,7 +143,7 @@ name: "Ahsan Jannat"
 
       <TrendingPosts posts={sortedPosts} />
 
-      <PostGrid posts={sortedPosts.slice(8)} />
+      <PostGrid posts={sortedPosts.slice(8, 14)} />
 
 <HomeSEOSection posts={sortedPosts} />
 
