@@ -1,9 +1,11 @@
 import BlogCard from "@/components/BlogCard";
 import Link from "next/link";
 
-export default function PostGrid({ posts, showHeader = true }: any) {
+export default function PostGrid({ posts, showHeader = true, limit }: any) {
 
   if (!posts.length) return null;
+
+  const displayedPosts = limit ? posts.slice(0, limit) : posts;
 
   return (
     <section
@@ -30,7 +32,7 @@ export default function PostGrid({ posts, showHeader = true }: any) {
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
 
-        {posts.slice(0, 6).map((post: any) => (
+        {displayedPosts.map((post: any) => (
           <BlogCard
             key={post.slug}
             title={post.title}
