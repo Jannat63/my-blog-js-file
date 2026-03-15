@@ -10,13 +10,16 @@ export const dynamic = "force-dynamic";
 /* -------------------------
    OG / Social Metadata
 -------------------------- */
+
 export async function generateMetadata({ params }: { params: { slug: string } }) {
 
   const stories = await getStories();
 
+  const cleanSlug = params.slug.trim().toLowerCase();
+
   const story = stories.find(
     (s: any) =>
-      s.slug?.trim().toLowerCase() === params.slug.trim().toLowerCase() &&
+      s.slug?.trim().toLowerCase() === cleanSlug &&
       s.status?.trim().toLowerCase() === "published"
   );
 
@@ -28,16 +31,16 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   }
 
   const image = story.image?.startsWith("http")
-  ? story.image
-  : `https://ahsansblog.netlify.app${story.image}`;
+    ? story.image
+    : `https://ahsansblog.netlify.app${story.image}`;
 
   return {
-    title: story.title || "Story",
-    description: story.excerpt || "Read this story by Ahsan Jannat",
+    title: story.title,
+    description: story.excerpt,
 
     openGraph: {
-      title: story.title || "Story",
-      description: story.excerpt || "Read this story by Ahsan Jannat",
+      title: story.title,
+      description: story.excerpt,
       url: `https://ahsansblog.netlify.app/stories/${story.slug}`,
       siteName: "Ahsan Jannat Blog",
       images: [
@@ -52,23 +55,24 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
     twitter: {
       card: "summary_large_image",
-      title: story.title || "Story",
-      description: story.excerpt || "Read this story by Ahsan Jannat",
+      title: story.title,
+      description: story.excerpt,
       images: [image],
     },
   };
 }
+
 /* -------------------------
    PAGE COMPONENT
 -------------------------- */
 
 type Props = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 export default async function StoryPage({ params }: Props) {
 
-  const { slug } = params;
+  const { slug } = await params;
 
   const stories = await getStories();
 
