@@ -13,12 +13,18 @@ export const metadata = {
 
 export default async function ArticlesPage() {
 
-  const posts = await getSheetData();
+const posts = await getSheetData();
 
-  const sortedPosts = posts.sort(
-    (a: any, b: any) =>
-      new Date(b.date).getTime() - new Date(a.date).getTime()
-  );
+/* show only published posts */
+const publishedPosts = posts.filter(
+  (post: any) => post.status?.toLowerCase() === "published"
+);
+
+/* sort by newest */
+const sortedPosts = publishedPosts.sort(
+  (a: any, b: any) =>
+    new Date(b.date).getTime() - new Date(a.date).getTime()
+);
 
   const siteUrl = "https://ahsansblog.netlify.app";
 
