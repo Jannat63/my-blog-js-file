@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function TrendingPosts({ posts }: any) {
 
-  const trending = posts.slice(4, 8);
+  const trending = posts.slice(1, 5);
 
   if (!trending.length) return null;
 
