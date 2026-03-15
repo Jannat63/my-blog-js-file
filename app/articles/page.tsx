@@ -106,7 +106,7 @@ const sortedPosts = publishedPosts.sort(
       </section>
 
       {/* POSTS GRID */}
-      <PostGrid posts={sortedPosts} showHeader={false} />
+      <PostGrid posts={sortedPosts} showHeader={false} limit={1000} />
 
       {/* SEO CONTENT */}
       <ArticlesSEOSection />
