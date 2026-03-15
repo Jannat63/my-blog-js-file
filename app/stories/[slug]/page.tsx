@@ -10,7 +10,6 @@ export const dynamic = "force-dynamic";
 /* -------------------------
    OG / Social Metadata
 -------------------------- */
-
 export async function generateMetadata({ params }: { params: { slug: string } }) {
 
   const stories = await getStories();
@@ -22,21 +21,28 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   );
 
   if (!story) {
-    return {};
+    return {
+      title: "Story",
+      description: "Story from Ahsan Jannat",
+    };
   }
 
+  const image = story.image?.startsWith("http")
+  ? story.image
+  : `https://ahsansblog.netlify.app${story.image}`;
+
   return {
-    title: story.title,
-    description: story.excerpt,
+    title: story.title || "Story",
+    description: story.excerpt || "Read this story by Ahsan Jannat",
 
     openGraph: {
-      title: story.title,
-      description: story.excerpt,
+      title: story.title || "Story",
+      description: story.excerpt || "Read this story by Ahsan Jannat",
       url: `https://ahsansblog.netlify.app/stories/${story.slug}`,
       siteName: "Ahsan Jannat Blog",
       images: [
         {
-          url: story.image,
+          url: image,
           width: 1200,
           height: 630,
         },
@@ -46,24 +52,23 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
     twitter: {
       card: "summary_large_image",
-      title: story.title,
-      description: story.excerpt,
-      images: [story.image],
+      title: story.title || "Story",
+      description: story.excerpt || "Read this story by Ahsan Jannat",
+      images: [image],
     },
   };
 }
-
 /* -------------------------
    PAGE COMPONENT
 -------------------------- */
 
 type Props = {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 };
 
 export default async function StoryPage({ params }: Props) {
 
-  const { slug } = await params;
+  const { slug } = params;
 
   const stories = await getStories();
 
