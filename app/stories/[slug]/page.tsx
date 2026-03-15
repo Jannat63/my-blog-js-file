@@ -94,29 +94,29 @@ export default async function StoryPage({ params }: Props) {
 
       </div>
 
-      {relatedStories.length > 0 && (
-        <section className="mt-24">
+     {relatedStories.length > 0 && (
+  <section className="mt-24">
 
-          <h2 className="text-2xl font-semibold mb-8">
-            📚 Read More Stories
-          </h2>
+    <h2 className="text-2xl font-semibold mb-8">
+      📚 Read More Stories
+    </h2>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
 
-            {relatedStories.map((s: any) => (
-              <BlogCard
-                key={s.slug}
-                title={s.title}
-                excerpt={s.excerpt}
-                image={s.image}
-                slug={s.slug}
-              />
-            ))}
+      {relatedStories.map((s: any) => (
+        <BlogCard
+          key={s.slug}
+          title={s.title}
+          excerpt={s.excerpt}
+          image={s.image}
+          slug={`stories/${s.slug}`}
+        />
+      ))}
 
-          </div>
+    </div>
 
-        </section>
-      )}
+  </section>
+)}
 
     </main>
   );
