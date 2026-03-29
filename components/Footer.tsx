@@ -138,7 +138,7 @@ export default function Footer() {
         </a>
 
         <p>
-          © {new Date().getFullYear()} Ahsan's Blog. All rights reserved.
+          © {new Date().getFullYear()} Ahsan's Blog. All rights reserved. Thank You.
         </p>
 
       </div>
