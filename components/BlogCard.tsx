@@ -13,8 +13,10 @@ export default function BlogCard({
   image,
   slug,
 }: BlogCardProps) {
-  return (
-    <Link href={`/${slug}`} className="block group h-full">
+  const postUrl = `/blog/${slug}`;
+
+return (
+  <Link href={postUrl} className="block group h-full">
 
       <article className="bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
 
