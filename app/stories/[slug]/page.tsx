@@ -199,7 +199,7 @@ export default async function StoryPage({ params }: Props) {
                 image={s.image}
 
                 /* ✅ FIXED (VERY IMPORTANT) */
-                slug={s.slug}
+                slug={`stories/${s.slug}`}
               />
             ))}
 

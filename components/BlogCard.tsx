@@ -13,7 +13,7 @@ export default function BlogCard({
   image,
   slug,
 }: BlogCardProps) {
-  const postUrl = `/blog/${slug}`;
+  const postUrl = `/${slug}`;
 
 return (
   <Link href={postUrl} className="block group h-full">
