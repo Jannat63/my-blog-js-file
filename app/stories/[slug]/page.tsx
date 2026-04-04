@@ -11,7 +11,7 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
-/* ✅ SEO METADATA (VERY IMPORTANT) */
+/* ✅ SEO METADATA (FIXED URL) */
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
   const stories = await getStories();
@@ -28,13 +28,19 @@ export async function generateMetadata({ params }: Props) {
     description:
       story.excerpt ||
       "বাংলা গল্প (Bangla Story) পড়ুন বাস্তব অভিজ্ঞতা, জীবন ও অনুভূতির উপর ভিত্তি করে লেখা গল্প।",
+
+    /* ✅ FIXED */
     alternates: {
-      canonical: `https://ahsansblog.netlify.app/blog/${story.slug}`,
+      canonical: `https://ahsansblog.netlify.app/stories/${story.slug}`,
     },
+
     openGraph: {
       title: story.title,
       description: story.excerpt,
-      url: `https://ahsansblog.netlify.app/blog/${story.slug}`,
+
+      /* ✅ FIXED */
+      url: `https://ahsansblog.netlify.app/stories/${story.slug}`,
+
       images: [
         {
           url: story.image,
@@ -45,7 +51,6 @@ export async function generateMetadata({ params }: Props) {
 }
 
 export default async function StoryPage({ params }: Props) {
-
   const { slug } = await params;
 
   const stories = await getStories();
@@ -74,7 +79,7 @@ export default async function StoryPage({ params }: Props) {
     )
     .slice(0, 3);
 
-  /* ✅ IMPROVED SCHEMA */
+  /* ✅ FIXED SCHEMA */
   const schema = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -92,12 +97,14 @@ export default async function StoryPage({ params }: Props) {
     },
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `https://ahsansblog.netlify.app/blog/${story.slug}`,
+
+      /* ✅ FIXED */
+      "@id": `https://ahsansblog.netlify.app/stories/${story.slug}`,
     },
     articleBody: story.content.replace(/<[^>]+>/g, ""),
   };
 
-  /* ✅ BREADCRUMB SCHEMA */
+  /* ✅ FIXED BREADCRUMB */
   const breadcrumbSchema = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -111,8 +118,10 @@ export default async function StoryPage({ params }: Props) {
       {
         "@type": "ListItem",
         position: 2,
-        name: "Bangla Story",
-        item: "https://ahsansblog.netlify.app/bangla-story",
+        name: "Stories",
+
+        /* ✅ FIXED */
+        item: "https://ahsansblog.netlify.app/stories",
       },
       {
         "@type": "ListItem",
@@ -143,15 +152,12 @@ export default async function StoryPage({ params }: Props) {
 
         <article className="prose prose-lg max-w-[720px] mx-auto">
 
-          {/* ✅ KEYWORD OPTIMIZED TITLE */}
           <h1>{story.title} - বাংলা গল্প (Bangla Story)</h1>
 
-          {/* ✅ IMPROVED META INFO */}
           <p className="text-gray-500 text-sm">
             বাংলা গল্প • {calculateReadingTime(story.content)} • {story.date}
           </p>
 
-          {/* ✅ IMAGE SEO IMPROVEMENT */}
           {story.image && (
             <div className="my-6">
               <img
@@ -165,10 +171,9 @@ export default async function StoryPage({ params }: Props) {
 
           <div dangerouslySetInnerHTML={{ __html: story.content }} />
 
-          {/* ✅ INTERNAL LINKING BOOST */}
           <p>
             আরও বাংলা গল্প পড়তে আমাদের{" "}
-            <a href="/bangla-story">বাংলা গল্প সংগ্রহ</a> দেখুন।
+            <a href="/stories">বাংলা গল্প সংগ্রহ</a>
           </p>
 
           <StorySEOContent />
@@ -192,7 +197,9 @@ export default async function StoryPage({ params }: Props) {
                 title={s.title}
                 excerpt={s.excerpt}
                 image={s.image}
-                slug={`stories/${s.slug}`}
+
+                /* ✅ FIXED (VERY IMPORTANT) */
+                slug={s.slug}
               />
             ))}
 
