@@ -5,46 +5,38 @@ import { getStories } from "@/lib/getStories";
 import type { MetadataRoute } from "next";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const baseUrl = "https://ahsansblog.netlify.app";
 
   const posts = await getSheetData();
   const stories = await getStories();
 
-  const baseUrl = "https://ahsansblog.netlify.app";
+  // 🔹 Static pages (VERY IMPORTANT for structure)
+  const staticPages = ["", "/blog", "/stories", "/about", "/contact"].map((route) => ({
+    url: `${baseUrl}${route}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: route === "" ? 1.0 : 0.9,
+  }));
 
-  /* Blog post URLs */
-
+  // 🔹 Blog posts
   const postUrls = posts
-    .filter((post:any)=>post.status==="published")
-    .map((post:any)=>({
+    .filter((post: any) => post.status === "published")
+    .map((post: any) => ({
       url: `${baseUrl}/blog/${post.slug}`,
-      lastModified: post.date || new Date().toISOString(),
+      lastModified: new Date(post.updated_at || post.date),
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    }));
+
+  // 🔹 Stories
+  const storyUrls = stories
+    .filter((story: any) => story.status === "published")
+    .map((story: any) => ({
+      url: `${baseUrl}/stories/${story.slug}`,
+      lastModified: new Date(story.updated_at || story.date),
       changeFrequency: "weekly" as const,
       priority: 0.7,
     }));
 
-
-  /* Story URLs */
-
-  const storyUrls = stories
-    .filter((story:any)=>story.status==="published")
-    .map((story:any)=>({
-      url: `${baseUrl}/stories/${story.slug}`,
-      lastModified: story.date || new Date().toISOString(),
-      changeFrequency: "weekly" as const,
-      priority: 0.6,
-    }));
-
-
-  return [
-    {
-      url: baseUrl,
-      lastModified: new Date().toISOString(),
-      changeFrequency: "daily",
-      priority: 1.0,
-    },
-
-    ...postUrls,
-    ...storyUrls
-  ];
-
+  return [...staticPages, ...postUrls, ...storyUrls];
 }
