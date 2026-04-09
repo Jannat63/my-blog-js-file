@@ -25,7 +25,7 @@ export default function StoriesInfinite({ stories }: any) {
             title={story.title}
             excerpt={story.excerpt}
             image={story.image}
-            slug={`stories/${story.slug}`}
+            url={`/stories/${story.slug}`}   // ✅ FIXED
           />
         ))}
 
