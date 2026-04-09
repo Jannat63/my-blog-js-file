@@ -193,14 +193,12 @@ export default async function StoryPage({ params }: Props) {
 
             {relatedStories.map((s: any) => (
               <BlogCard
-                key={s.slug}
-                title={s.title}
-                excerpt={s.excerpt}
-                image={s.image}
-
-                /* ✅ FIXED (VERY IMPORTANT) */
-                slug={`stories/${s.slug}`}
-              />
+  key={s.slug}
+  title={s.title}
+  excerpt={s.excerpt}
+  image={s.image}
+  url={`/stories/${s.slug}`}
+/>
             ))}
 
           </div>
