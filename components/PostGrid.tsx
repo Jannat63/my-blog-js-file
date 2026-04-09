@@ -34,12 +34,12 @@ export default function PostGrid({ posts, showHeader = true, limit }: any) {
 
         {displayedPosts.map((post: any) => (
           <BlogCard
-            key={post.slug}
-            title={post.title}
-            excerpt={post.excerpt}
-            image={post.image}
-            slug={post.slug}
-          />
+  key={post.slug}
+  title={post.title}
+  excerpt={post.excerpt}
+  image={post.image}
+  url={`/blog/${post.slug}`}
+/>
         ))}
 
       </div>

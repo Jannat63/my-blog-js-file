@@ -4,19 +4,18 @@ type BlogCardProps = {
   title: string;
   excerpt: string;
   image?: string;
-  slug: string;
+  url: string; // ✅ use full URL instead of slug
 };
 
 export default function BlogCard({
   title,
   excerpt,
   image,
-  slug,
+  url,
 }: BlogCardProps) {
-  const postUrl = `/blog/${slug}`;
 
-return (
-  <Link href={postUrl} className="block group h-full">
+  return (
+    <Link href={url} className="block group h-full">
 
       <article className="bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
 
@@ -27,6 +26,7 @@ return (
               src={image}
               alt={title}
               className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
+              loading="lazy"
             />
           </div>
         )}

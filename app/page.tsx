@@ -230,12 +230,12 @@ Read Story →
 
           {sortedStories.slice(1, 4).map((story: any) => (
             <BlogCard
-              key={story.slug}
-              title={story.title}
-              excerpt={story.excerpt}
-              image={story.image}
-              slug={`stories/${story.slug}`}
-            />
+  key={story.slug}
+  title={story.title}
+  excerpt={story.excerpt}
+  image={story.image}
+  url={`/stories/${story.slug}`}
+/>
           ))}
 
         </div>
