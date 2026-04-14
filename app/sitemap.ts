@@ -1,16 +1,18 @@
-export const dynamic = "force-dynamic";
-
 import { getSheetData } from "@/lib/googleSheets";
 import { getStories } from "@/lib/getStories";
 import type { MetadataRoute } from "next";
 
+// ✅ Cache sitemap (VERY IMPORTANT)
+export const revalidate = 3600; // 1 hour
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://ahsansblog.netlify.app";
 
+  // Fetch data
   const posts = await getSheetData();
   const stories = await getStories();
 
-  // 🔹 Static pages (VERY IMPORTANT for structure)
+  // 🔹 Static pages
   const staticPages = ["", "/blog", "/stories", "/about", "/contact"].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
