@@ -155,12 +155,12 @@ export default async function Home() {
 
       <FeaturedPosts posts={featured} />
 
-      {/* <TrendingPosts posts={sortedPosts} /> */}
+      <TrendingPosts posts={sortedPosts} /> 
 
-      {/* <PostGrid posts={sortedPosts.slice(8, 14)} /> */}
+      <PostGrid posts={sortedPosts.slice(8, 14)} /> 
 
 
-        {/* FEATURED STORY */}
+    {/* FEATURED STORY */}
 
 {sortedStories.length > 0 && (
 
