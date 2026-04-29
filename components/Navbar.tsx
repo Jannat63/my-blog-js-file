@@ -3,11 +3,15 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
+import { FaSearch, FaBars, FaTimes } from "react-icons/fa";
 
 export default function Navbar() {
 
   const [lang, setLang] = useState("en");
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const cookie = document.cookie
@@ -20,154 +24,154 @@ export default function Navbar() {
     }
   }, []);
 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   const changeLang = (target: "en" | "bn") => {
-
     const langCode = target === "bn" ? "/en/bn" : "/en/en";
-
     document.cookie = `googtrans=${langCode}; path=/`;
     document.cookie = `googtrans=${langCode}; path=/; domain=${window.location.hostname}`;
-
     setLang(target);
-
     window.location.reload();
   };
 
   const closeMenu = () => setOpen(false);
 
-  return (
-    <header className="border-b bg-white/80 backdrop-blur sticky top-0 z-40">
+  const navLinks = [
+    { href: "/",          label: "Home" },
+    { href: "/articles",  label: "Articles" },
+    { href: "/stories",   label: "Stories" },
+    { href: "/watch-tv",  label: "Watch TV" },
+    { href: "/about",     label: "About" },
+  ];
 
-      <div className="max-w-[1100px] mx-auto px-6 py-4 flex justify-between items-center">
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
+
+  return (
+    <header
+      className={`sticky top-0 z-40 transition-all duration-300 ${
+        scrolled
+          ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100"
+          : "bg-white border-b border-gray-100"
+      }`}
+    >
+      <div className="max-w-[1100px] mx-auto px-6 py-3 flex items-center justify-between gap-6">
 
         {/* Logo */}
         <Link
           href="/"
           aria-label="Ahsan's Blog Home"
-          className="flex items-center hover:opacity-80 transition"
+          className="flex flex-col hover:opacity-85 transition flex-shrink-0"
         >
           <Image
             src="/logo.png"
             alt="Ahsan Blog Logo"
-            width={180}
-            height={50}
-            sizes="180px"
+            width={160}
+            height={44}
+            sizes="160px"
             className="h-auto"
             priority
           />
+          <span className="text-[10px] text-gray-400 font-medium tracking-wide mt-0.5 pl-0.5">
+            Insights · Tech · World
+          </span>
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-4 text-sm">
+        <nav className="hidden md:flex items-center gap-1 text-sm flex-1 justify-center">
+          {navLinks.map(({ href, label }) => (
+            <Link
+              key={href}
+              href={href}
+              className={`nav-link ${isActive(href) ? "active" : ""}`}
+            >
+              {label}
+            </Link>
+          ))}
+        </nav>
 
-          <Link href="/" className="nav-link">
-            Home
-          </Link>
+        {/* Desktop Right Actions */}
+        <div className="hidden md:flex items-center gap-3">
 
-          <Link href="/articles" className="nav-link">
-            Articles
-          </Link>
+          {/* Search icon (visual) */}
+          <button
+            aria-label="Search"
+            className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition"
+          >
+            <FaSearch size={13} />
+          </button>
 
-          {/* NEW STORIES LINK */}
-          <Link href="/stories" className="nav-link">
-            Stories
-          </Link>
-
-          <Link href="/watch-tv" className="nav-link">
-            📺 Watch TV
-          </Link>
-
-          <Link href="/about" className="nav-link">
-            About
-          </Link>
-
-          <div className="flex items-center gap-2 ml-2">
-
+          {/* Language flags */}
+          <div className="lang-flags">
             <button
               onClick={() => changeLang("en")}
               className={`flag-btn ${lang === "en" ? "active" : ""}`}
+              aria-label="English"
             >
               🇺🇸
             </button>
-
             <button
               onClick={() => changeLang("bn")}
               className={`flag-btn ${lang === "bn" ? "active" : ""}`}
+              aria-label="বাংলা"
             >
               🇧🇩
             </button>
-
           </div>
 
-        </nav>
+        </div>
 
         {/* Mobile Menu Button */}
         <button
-          className="md:hidden text-2xl"
+          className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg text-gray-600 hover:bg-gray-100 transition"
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
         >
-          ☰
+          {open ? <FaTimes size={16} /> : <FaBars size={16} />}
         </button>
 
       </div>
 
       {/* Mobile Menu */}
-
       <div
         className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-          open ? "max-h-[400px] border-t" : "max-h-0"
+          open ? "max-h-[500px]" : "max-h-0"
         }`}
       >
+        <div className="border-t border-gray-100 bg-white px-6 py-5 flex flex-col gap-1">
 
-        <div className="px-6 py-4 flex flex-col gap-4">
-
-          <Link href="/" onClick={closeMenu} className="mobile-link">
-            Home
-          </Link>
-
-          <Link href="/articles" onClick={closeMenu} className="mobile-link">
-            Articles
-          </Link>
-
-          {/* NEW STORIES LINK */}
-          <Link href="/stories" onClick={closeMenu} className="mobile-link">
-            Stories
-          </Link>
-
-          <Link href="/watch-tv" onClick={closeMenu} className="mobile-link">
-            📺 Watch TV
-          </Link>
-
-          <Link href="/about" onClick={closeMenu} className="mobile-link">
-            About
-          </Link>
+          {navLinks.map(({ href, label }) => (
+            <Link
+              key={href}
+              href={href}
+              onClick={closeMenu}
+              className={`mobile-link ${isActive(href) ? "text-[var(--accent)] font-semibold" : ""}`}
+            >
+              {label}
+            </Link>
+          ))}
 
           {/* Language buttons */}
-
-          <div className="flex flex-col gap-2 pt-2 w-full">
-
+          <div className="flex gap-2 pt-4 mt-2 border-t border-gray-100">
             <button
               onClick={() => changeLang("en")}
-              className={`flag-btn w-full text-left ${
-                lang === "en" ? "active" : ""
-              }`}
+              className={`flag-btn flex-1 gap-2 justify-center text-sm ${lang === "en" ? "active" : ""}`}
             >
               🇺🇸 English
             </button>
-
             <button
               onClick={() => changeLang("bn")}
-              className={`flag-btn w-full text-left ${
-                lang === "bn" ? "active" : ""
-              }`}
+              className={`flag-btn flex-1 gap-2 justify-center text-sm ${lang === "bn" ? "active" : ""}`}
             >
               🇧🇩 বাংলা
             </button>
-
           </div>
 
         </div>
-
       </div>
 
     </header>

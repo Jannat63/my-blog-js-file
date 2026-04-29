@@ -2,6 +2,7 @@ import Link from "next/link";
 import { calculateReadingTime } from "@/lib/readingTime";
 
 export default function FeaturedPosts({ posts }: any) {
+
   if (!posts.length) return null;
 
   /* sort posts by date so newest post becomes featured */
@@ -10,93 +11,107 @@ export default function FeaturedPosts({ posts }: any) {
   );
 
   const main = sortedPosts[0];
-  const side = sortedPosts.slice(1, 4);
+  const list = sortedPosts.slice(1, 5);
 
   return (
-    <section className="max-w-[1100px] mx-auto px-6 mb-20 grid lg:grid-cols-2 gap-10">
+    <section className="max-w-[1100px] mx-auto px-6 pb-20">
 
-      {/* FEATURED POST */}
-      <Link href={`/blog/${main.slug}`} className="group">
-        <div className="space-y-5">
+      {/* Header */}
+      <div className="section-header mb-8">
+        <h2 className="section-title">
+          <span className="section-title-bar" />
+          📰 Latest Articles
+        </h2>
+        <Link href="/articles" className="view-all-link">
+          View All →
+        </Link>
+      </div>
+
+      <div className="grid lg:grid-cols-[1fr_380px] gap-8 items-start">
+
+        {/* ─── LEFT: Main featured article ─── */}
+        <a href={`/blog/${main.slug}`} className="articles-main-card group">
 
           {main.image && (
-            <div className="overflow-hidden rounded-2xl">
+            <div className="overflow-hidden aspect-[16/10]">
               <img
                 src={main.image}
                 alt={main.title}
-                className="w-full h-[420px] object-cover group-hover:scale-105 transition duration-500"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                loading="lazy"
               />
             </div>
           )}
 
-          {/* FEATURED LABEL */}
-          <span className="inline-block text-xs font-semibold tracking-wide text-gray-700 bg-gray-100 px-3 py-1 rounded-full">
-            Latest Story
-          </span>
+          <div className="p-7">
 
-          {/* Title */}
-          <h2 className="text-4xl font-semibold leading-snug font-[var(--font-playfair)]">
-            {main.title}
-          </h2>
+            <span className="label-accent text-[11px] mb-3 block">
+              Featured
+            </span>
 
-          {/* Meta */}
-          <p className="text-gray-600 text-sm">
-            {calculateReadingTime(main.content)} • {main.date}
-          </p>
+            <h2 className="text-2xl font-bold leading-snug text-gray-900 mb-3 group-hover:text-[var(--accent)] transition-colors">
+              {main.title}
+            </h2>
 
-          {/* Excerpt */}
-          {main.excerpt && (
-            <p className="text-gray-600 leading-relaxed line-clamp-3">
-              {main.excerpt}
+            <p className="text-gray-500 text-sm mb-4">
+              {calculateReadingTime(main.content)}
+              <span className="mx-2">·</span>
+              {main.date}
             </p>
-          )}
 
-        </div>
-      </Link>
-
-      {/* SIDE POSTS */}
-      <div className="space-y-6">
-
-        {side.map((post: any, index: number) => (
-          <div key={post.slug}>
-
-            {index !== 0 && (
-              <div className="border-t border-gray-200 mb-6"></div>
+            {main.excerpt && (
+              <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">
+                {main.excerpt}
+              </p>
             )}
 
-            <Link
-              href={`/blog/${post.slug}`}
-              className="flex gap-4 group"
-            >
+            <span className="inline-flex items-center gap-1.5 mt-5 text-sm font-semibold text-[var(--accent)]">
+              Read More →
+            </span>
 
+          </div>
+
+        </a>
+
+        {/* ─── RIGHT: Compact article list ─── */}
+        <div className="flex flex-col divide-y divide-gray-100">
+
+          {list.map((post: any) => (
+            <a
+              key={post.slug}
+              href={`/blog/${post.slug}`}
+              className="articles-list-item group"
+            >
               {post.image && (
                 <img
                   src={post.image}
                   alt={post.title}
-                  className="w-32 h-24 object-cover rounded-lg"
+                  className="w-[100px] h-[72px] object-cover rounded-xl flex-shrink-0"
+                  loading="lazy"
                 />
               )}
 
-              <div className="space-y-1">
+              <div className="flex flex-col justify-center gap-1 min-w-0">
 
-                {/* Title */}
-                <h3 className="font-semibold group-hover:text-black transition line-clamp-2">
+                <h3 className="text-sm font-semibold leading-snug line-clamp-2 text-gray-900 group-hover:text-[var(--accent)] transition-colors">
                   {post.title}
                 </h3>
 
-                {/* Meta */}
-                <p className="text-sm text-gray-500">
-                  {calculateReadingTime(post.content)} • {post.date}
+                <p className="text-[11px] text-gray-400">
+                  {calculateReadingTime(post.content)}
+                  <span className="mx-1.5">·</span>
+                  {post.date}
                 </p>
 
               </div>
 
-            </Link>
+            </a>
+          ))}
 
-          </div>
-        ))}
+        </div>
 
       </div>
+
     </section>
   );
 }

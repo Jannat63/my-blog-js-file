@@ -10,19 +10,20 @@ export default function PostGrid({ posts, showHeader = true, limit }: any) {
   return (
     <section
       id="latest"
-      className="max-w-[1100px] mx-auto px-6 pb-24"
+      className="max-w-[1100px] mx-auto px-6 pb-20"
     >
 
       {showHeader && (
-        <div className="flex items-center justify-between mb-10">
+        <div className="section-header mb-8">
 
-          <h2 className="text-2xl font-semibold">
-            📰 Latest Articles
+          <h2 className="section-title">
+            <span className="section-title-bar" />
+            More Articles
           </h2>
 
           <Link
             href="/articles"
-            className="text-sm font-medium text-gray-600 hover:text-black transition"
+            className="view-all-link"
           >
             View All →
           </Link>
@@ -30,16 +31,16 @@ export default function PostGrid({ posts, showHeader = true, limit }: any) {
         </div>
       )}
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 
         {displayedPosts.map((post: any) => (
           <BlogCard
-  key={post.slug}
-  title={post.title}
-  excerpt={post.excerpt}
-  image={post.image}
-  url={`/blog/${post.slug}`}
-/>
+            key={post.slug}
+            title={post.title}
+            excerpt={post.excerpt}
+            image={post.image}
+            url={`/blog/${post.slug}`}
+          />
         ))}
 
       </div>

@@ -4,7 +4,7 @@ type BlogCardProps = {
   title: string;
   excerpt: string;
   image?: string;
-  url: string; // ✅ use full URL instead of slug
+  url: string;
 };
 
 export default function BlogCard({
@@ -17,32 +17,31 @@ export default function BlogCard({
   return (
     <Link href={url} className="block group h-full">
 
-      <article className="bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
+      <article className="blog-card">
 
         {/* Image */}
         {image && (
-          <div className="overflow-hidden">
+          <div className="blog-card-img-wrap">
             <img
               src={image}
               alt={title}
-              className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
               loading="lazy"
             />
           </div>
         )}
 
         {/* Content */}
-        <div className="p-6 flex flex-col flex-grow">
+        <div className="blog-card-body">
 
-          <h2 className="text-lg font-semibold leading-snug mb-2 line-clamp-2">
+          <h2 className="text-[15px] font-semibold leading-snug mb-2 line-clamp-2 text-gray-900 group-hover:text-[var(--accent)] transition-colors">
             {title}
           </h2>
 
-          <p className="text-gray-600 text-sm leading-relaxed line-clamp-3 flex-grow">
+          <p className="text-gray-500 text-[13px] leading-relaxed line-clamp-3 flex-grow">
             {excerpt}
           </p>
 
-          <span className="mt-4 text-sm font-medium text-black">
+          <span className="mt-4 inline-flex items-center gap-1 text-[13px] font-semibold text-[var(--accent)]">
             Read →
           </span>
 
