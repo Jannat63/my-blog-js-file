@@ -136,7 +136,7 @@ export default function Footer() {
                   className="flex items-center gap-2"
                 >
                   <FaEnvelope size={12} />
-                  hello@ahsansblog.com
+                  ajbmix63@gmail.com
                 </a>
               </li>
               <li>
